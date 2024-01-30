@@ -1,0 +1,10 @@
+OOOO
+1,0
+VORM
+0,1
+OBNJ
+1,1
+OJGG
+2,0
+ONGN
+4,0
