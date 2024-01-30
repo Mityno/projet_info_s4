@@ -31,7 +31,7 @@ def donner_possibles(comb_test, eval_donnee):
             if evaluation(comb, comb_test) == eval_donnee}
 
 
-def maj_possible(comb_possibles, comb_test, eval_donnee):
+def maj_possibles(comb_possibles, comb_test, eval_donnee):
     comb_a_supprimer = set()
     for comb in comb_possibles:
         if eval_donnee != evaluation(comb_test, comb):
