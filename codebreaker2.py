@@ -30,5 +30,3 @@ def codebreaker(evaluation_p):
  
     comb_test = random.choice(tuple(comb_possibles))
     return comb_test
-
-# qu'est ce qui est plus fort qu'un lion ?
