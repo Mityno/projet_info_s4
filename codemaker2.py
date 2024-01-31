@@ -29,7 +29,7 @@ def codemaker(combinaison):
     """
     global solution
     eval_retour = common.evaluation(solution, combinaison)
-    common.maj_possible(comb_possibles, combinaison, eval_retour)
+    common.maj_possibles(comb_possibles, combinaison, eval_retour)
     solution = random.choice(tuple(comb_possibles))
     assert common.evaluation(solution, combinaison) == eval_retour
     return eval_retour
