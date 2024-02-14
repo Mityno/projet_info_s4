@@ -23,7 +23,7 @@ def evaluation(essai, reference):
     
     compteur_bien_placees = sum(lettres_bien_placees.values())
         
-    return (compteur_bien_placees, compteur_mal_placees)
+    return compteur_bien_placees, compteur_mal_placees
 
 
 def donner_possibles(comb_test, eval_donnee):

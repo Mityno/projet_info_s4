@@ -29,4 +29,5 @@ def codebreaker(evaluation_p):
         common.maj_possibles(comb_possibles, comb_test, evaluation_p)
  
     comb_test = random.choice(tuple(comb_possibles))
+    print('codebreaker', len(comb_possibles))
     return comb_test
