@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+
 import itertools
+import random
 
 LENGTH = 4
 COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
@@ -38,6 +40,18 @@ def maj_possibles(comb_possibles, comb_test, eval_donnee):
             comb_a_supprimer.add(comb)
     
     comb_possibles.difference_update(comb_a_supprimer)
+
+
+if __name__ == '__main__':
+    combs_possibles = list(itertools.product(COLORS, repeat=LENGTH))
+    solution = random.choice(combs_possibles)
+    longueurs = []
+    for comb in combs_possibles:
+        temp_eval = evaluation(comb, solution)
+        longueurs.append(len(donner_possibles(comb, temp_eval)))
+
+    longueurs.sort()
+    print(longueurs[-10:])
 
 
 # def remplissage_mal_placees(nombre_mal_placees, lettres_restantes):
