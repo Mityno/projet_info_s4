@@ -97,4 +97,3 @@ if __name__ == '__main__':
     # plt.show()
     
     play_log(codemaker, codebreaker, 'log.txt')
-    
