@@ -63,12 +63,3 @@ def codemaker(combinaison):
     eval_retour = common.evaluation(solution, combinaison)    
     common.maj_possibles(comb_possibles, combinaison, eval_retour)
     return eval_retour
-
-
-def get_solution_value(test_sol, reference, comb_possibles):
-    temp_eval = common.evaluation(test_sol, reference)
-    return len([
-        other_comb
-        for other_comb in comb_possibles
-        if common.evaluation(other_comb, reference) == temp_eval
-        ])
