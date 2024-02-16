@@ -7,7 +7,13 @@ LENGTH = 4
 COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
 # Notez que vos programmes doivent continuer à fonctionner si on change les valeurs par défaut ci-dessus
 
+evaluation_cache = {}
+
 def evaluation(essai, reference):
+    result = evaluation_cache.get((essai, reference))
+    if result is not None:
+        return result
+
     lettres_reference = set(reference)
     lettres_bien_placees = {lettre : 0 for lettre in lettres_reference}
     
@@ -22,10 +28,13 @@ def evaluation(essai, reference):
         bien_placees = lettres_bien_placees[lettre]
         mal_place = min(compteur_ref - bien_placees, compteur_essai - bien_placees)
         compteur_mal_placees += mal_place
-    
+
     compteur_bien_placees = sum(lettres_bien_placees.values())
-        
-    return compteur_bien_placees, compteur_mal_placees
+
+    result = compteur_bien_placees, compteur_mal_placees
+    evaluation_cache[(essai, reference)] = result
+    evaluation_cache[(reference, essai)] = result
+    return result
 
 
 def donner_possibles(comb_test, eval_donnee):

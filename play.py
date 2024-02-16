@@ -83,17 +83,17 @@ if __name__ == '__main__':
     #import human_codemaker
     #play(human_codemaker, codebreaker1)
 
-    import codemaker2 as codemaker
+    import codemaker1 as codemaker
     import codebreaker2 as codebreaker
     import matplotlib.pyplot as plt
     import time
     
-    # bef = time.perf_counter()
-    # nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(100)]
-    # aft = time.perf_counter()
-    # print(aft - bef)
-    # # plt.hist(nb_essais, bins=20)
+    bef = time.perf_counter()
+    nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(1_000)]
+    aft = time.perf_counter()
+    print(aft - bef)
+    plt.hist(nb_essais, bins=len(set(nb_essais)))
     # plt.plot(list(range(len(nb_essais))), nb_essais)
-    # plt.show()
-    
-    play_log(codemaker, codebreaker, 'log.txt')
+    plt.show()
+
+    # play(codemaker, codebreaker, quiet=True)

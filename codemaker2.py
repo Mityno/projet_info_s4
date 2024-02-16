@@ -19,8 +19,6 @@ def init():
     }
     
     solution = random.choice(tuple(comb_possibles))
-    print('codemaker', solution, len(comb_possibles))
-
 
 
 def codemaker(combinaison):
@@ -39,18 +37,20 @@ def codemaker(combinaison):
     # le pire cas est d'avoir supprimé toutes les combinaisons
     best_combs_supprimees = float('inf')
 
-    for temp_sol in comb_possibles:
+    comb_a_tester = comb_possibles.copy()
+    while comb_a_tester:
+        temp_sol = next(iter(comb_a_tester))
+        comb_a_tester.discard(temp_sol)
+
         # on va évaluer si comb est une meilleure solution que best_sol
         temp_eval = common.evaluation(temp_sol, combinaison)
         temp_combs_supprimees = 0
 
         for other_comb in comb_possibles:
-            # on a supprimé plus de possibilité qu'avant, la solution est donc moins bonne
-            if temp_combs_supprimees >= best_combs_supprimees:
-                break
-
             if temp_eval != common.evaluation(other_comb, combinaison):
                 temp_combs_supprimees += 1
+            else:
+                comb_a_tester.discard(other_comb)
 
         # si on a moins de combinaisons à supprimer, c'est qu'on a trouvé
         # une "meilleure" solution
@@ -62,5 +62,13 @@ def codemaker(combinaison):
 
     eval_retour = common.evaluation(solution, combinaison)    
     common.maj_possibles(comb_possibles, combinaison, eval_retour)
-    print('codemaker', combinaison, solution, len(comb_possibles))
     return eval_retour
+
+
+def get_solution_value(test_sol, reference, comb_possibles):
+    temp_eval = common.evaluation(test_sol, reference)
+    return len([
+        other_comb
+        for other_comb in comb_possibles
+        if common.evaluation(other_comb, reference) == temp_eval
+        ])
