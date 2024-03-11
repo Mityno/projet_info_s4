@@ -2,6 +2,7 @@
 
 import common
 import numpy as np
+import sys
 
 
 def play(codemaker, codebreaker, quiet=False):
@@ -122,5 +123,20 @@ if __name__ == '__main__':
     # # plt.show()
     # plt.savefig('Comparaison des codemaker 1 et 2.pdf', dpi=300, format='pdf')
     # print('Finished')
+
+    import codemaker1 as codemaker
+    import codebreaker2 as codebreaker
+    import matplotlib.pyplot as plt
+    import time
+
+    bef = time.perf_counter()
+    n_essais = 500
+    nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(n_essais)]
+    aft = time.perf_counter()
+    print(aft - bef)
+    plt.suptitle(f'Hist of the number of tries before victory for {n_essais} games')
+    plt.hist(nb_essais, bins=len(set(nb_essais))-1, density=True, align='left', rwidth=0.6)
+    sys.stdout.flush()
+    plt.show()
 
     # play(codemaker, codebreaker, quiet=True)
