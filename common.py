@@ -16,11 +16,11 @@ def evaluation(essai, reference):
 
     lettres_reference = set(reference)
     lettres_bien_placees = {lettre : 0 for lettre in lettres_reference}
-    
+
     for let_essai, let_ref in zip(essai, reference):
         if let_essai == let_ref:
             lettres_bien_placees[let_ref] += 1
-    
+
     compteur_mal_placees = 0
     for lettre in lettres_reference:
         compteur_ref = reference.count(lettre)
@@ -47,7 +47,7 @@ def maj_possibles(comb_possibles, comb_test, eval_donnee):
     for comb in comb_possibles:
         if eval_donnee != evaluation(comb_test, comb):
             comb_a_supprimer.add(comb)
-    
+
     comb_possibles.difference_update(comb_a_supprimer)
 
 
@@ -90,14 +90,14 @@ if __name__ == '__main__':
 
 # # a reprendre completer
 # def remplissage_bien_placees(combinaison_test, evaluation_donnee):
-    
-    
+
+
 #     remplissages = remplissage_mal_placees(nombre_mal_placees, lettres_restantes)
-    
+
 #     for comb in remplissage:
 #         for lettre in comb:
 #             lettres_restantes.remove(lettre)
 #         lettres_bannies = set(lettres_restantes)
 #         remplissage_final(nombre_elements, lettres_bannies)
-        
+
 #         lettres_restantes.extend(comb)

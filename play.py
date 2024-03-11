@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import common
+import numpy as np
 
 
 def play(codemaker, codebreaker, quiet=False):
@@ -9,7 +10,7 @@ def play(codemaker, codebreaker, quiet=False):
     Fait jouer ensemble le codebreaker et le codemaker donnés en arguments
     Renvoie le nombre de coups joués pour trouver la solution
 
-    Attention, il ne *doit* pas être nécessaire de modifier cette fonction 
+    Attention, il ne *doit* pas être nécessaire de modifier cette fonction
     pour faire fonctionner vos codemaker et codebreaker (dans le cas contraire,
     ceux-ci ne seront pas considérés comme valables)
     """
@@ -33,7 +34,7 @@ def play_log(codemaker, codebreaker, nom_fichier):
     Fait jouer ensemble le codebreaker et le codemaker donnés en arguments
     Renvoie le nombre de coups joués pour trouver la solution
 
-    Attention, il ne *doit* pas être nécessaire de modifier cette fonction 
+    Attention, il ne *doit* pas être nécessaire de modifier cette fonction
     pour faire fonctionner vos codemaker et codebreaker (dans le cas contraire,
     ceux-ci ne seront pas considérés comme valables)
     """
@@ -51,7 +52,7 @@ def play_log(codemaker, codebreaker, nom_fichier):
         n_essais += 1
         if ev[0] >= common.LENGTH:
             break
-    
+
     with open(nom_fichier, mode='w') as fichier:
         for comb, ev in zip(liste_comb, liste_eval):
             fichier.write(f'{comb}\n{ev[0]},{ev[1]}\n')
@@ -83,17 +84,43 @@ if __name__ == '__main__':
     #import human_codemaker
     #play(human_codemaker, codebreaker1)
 
-    import codemaker1 as codemaker
-    import codebreaker2 as codebreaker
-    import matplotlib.pyplot as plt
-    import time
-    
-    bef = time.perf_counter()
-    nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(1_000)]
-    aft = time.perf_counter()
-    print(aft - bef)
-    plt.hist(nb_essais, bins=len(set(nb_essais)))
-    # plt.plot(list(range(len(nb_essais))), nb_essais)
-    plt.show()
+    import codemaker_triche as codemaker
+    import codebreaker_triche as codebreaker
+
+    play_log(codemaker, codebreaker, 'log_triche.txt')
+
+    # import codemaker1 as codemaker1
+    # import codemaker2 as codemaker2
+    # import codebreaker2 as codebreaker
+    # import matplotlib.pyplot as plt
+    # import time
+
+    # n = 2_000
+
+    # bef = time.perf_counter()
+    # nb_essais_c2 = [play(codemaker2, codebreaker, quiet=True) for i in range(n)]
+    # mid = time.perf_counter()
+    # print(f'codemaker 2 : {mid - bef:.2f}', flush=True)
+    # nb_essais_c1 = [play(codemaker1, codebreaker, quiet=True) for i in range(n)]
+    # aft = time.perf_counter()
+    # print(f'codemaker 1 : {aft - mid:.2f}', flush=True)
+    # # print(aft - bef)
+
+    # set_essais = set(nb_essais_c1) | set(nb_essais_c2)
+    # print(set_essais)
+    # bins = np.array(list(set_essais)) - 0.5
+    # print(bins)
+
+    # plt.hist(
+    #     (nb_essais_c1, nb_essais_c2),
+    #     bins=bins, density=True,
+    #     label=('Codemaker 1', 'Codemaker 2'), histtype='bar')
+    # # plt.plot(list(range(len(nb_essais))), nb_essais)
+    # plt.xlabel('Nombres d\'essais du codebreaker')
+    # plt.legend()
+    # plt.tight_layout()
+    # # plt.show()
+    # plt.savefig('Comparaison des codemaker 1 et 2.pdf', dpi=300, format='pdf')
+    # print('Finished')
 
     # play(codemaker, codebreaker, quiet=True)

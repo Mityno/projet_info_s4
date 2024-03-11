@@ -13,7 +13,6 @@ def init():
     solution = ''.join(random.choices(common.COLORS, k=common.LENGTH))
 
 
-
 def codemaker(combinaison):
     """
     Cette fonction corrige la combinaison proposée par le codebreaker

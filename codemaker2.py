@@ -13,11 +13,11 @@ def init():
     variables utilisées par le codemaker
     """
     global comb_possibles, solution
-    
+
     comb_possibles = {
         comb for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
-    
+
     solution = random.choice(tuple(comb_possibles))
 
 
@@ -27,7 +27,7 @@ def codemaker(combinaison):
     (donnée en argument)
     """
     global solution
-    
+
     # la combinaison voulue maximise le nombre de possibilités restantes
     # donc elle minimise le nombre de possibilités supprimées
     # on utilise cette propriété pour effectuer une selection efficace
@@ -60,6 +60,6 @@ def codemaker(combinaison):
 
     solution = best_sol
 
-    eval_retour = common.evaluation(solution, combinaison)    
+    eval_retour = common.evaluation(solution, combinaison)
     common.maj_possibles(comb_possibles, combinaison, eval_retour)
     return eval_retour

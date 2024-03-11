@@ -1,0 +1,8 @@
+MMNM
+2,0
+BMNV
+0,2
+MRVM
+0,1
+None
+4,0
