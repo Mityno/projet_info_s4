@@ -30,7 +30,7 @@ def codemaker(combinaison):
     """
     global solution
     if combinaison is None:
-        return (4, 0)  # to allow the simulation to end
+        return (4, 0)  # allows the simulation to end
 
     eval_retour = common.evaluation(solution, combinaison)
     common.maj_possibles(comb_possibles, combinaison, eval_retour)

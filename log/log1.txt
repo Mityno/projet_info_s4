@@ -1,0 +1,10 @@
+JRJB
+0,0
+GOVO
+1,2
+MVGO
+0,3
+OOMV
+3,0
+OOMG
+4,0

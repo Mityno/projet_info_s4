@@ -85,10 +85,10 @@ if __name__ == '__main__':
     #import human_codemaker
     #play(human_codemaker, codebreaker1)
 
-    import codemaker_triche as codemaker
-    import codebreaker_triche as codebreaker
+    # import codemaker_triche as codemaker
+    # import codebreaker_triche as codebreaker
 
-    play_log(codemaker, codebreaker, 'log_triche.txt')
+    # play_log(codemaker, codebreaker, 'log_triche.txt')
 
     # import codemaker1 as codemaker1
     # import codemaker2 as codemaker2
@@ -125,17 +125,17 @@ if __name__ == '__main__':
     # print('Finished')
 
     import codemaker1 as codemaker
-    import codebreaker2 as codebreaker
+    import codebreaker1 as codebreaker
     import matplotlib.pyplot as plt
     import time
 
     bef = time.perf_counter()
-    n_essais = 500
+    n_essais = 300
     nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(n_essais)]
     aft = time.perf_counter()
     print(aft - bef)
     plt.suptitle(f'Hist of the number of tries before victory for {n_essais} games')
-    plt.hist(nb_essais, bins=len(set(nb_essais))-1, density=True, align='left', rwidth=0.6)
+    plt.hist(nb_essais, bins=16 - 1, density=True, align='left', rwidth=0.6)
     sys.stdout.flush()
     plt.show()
 
