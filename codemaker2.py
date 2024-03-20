@@ -15,7 +15,7 @@ def init():
     global comb_possibles, solution
 
     comb_possibles = {
-        comb for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
+        ''.join(comb) for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
 
     solution = random.choice(tuple(comb_possibles))
@@ -52,8 +52,8 @@ def codemaker(combinaison):
             else:
                 comb_a_tester.discard(other_comb)
 
-        # si on a moins de combinaisons à supprimer, c'est qu'on a trouvé
-        # une "meilleure" solution
+        # si on a moins de combinaisons à supprimer, c'est qu'on a trouvé une
+        # "meilleure" solution (elle donne moins d'informations au codebreaker)
         if temp_combs_supprimees < best_combs_supprimees:
             best_sol = temp_sol
             best_combs_supprimees = temp_combs_supprimees

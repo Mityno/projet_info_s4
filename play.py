@@ -3,6 +3,7 @@
 import common
 import numpy as np
 import sys
+import time
 
 
 def play(codemaker, codebreaker, quiet=False):
@@ -39,6 +40,7 @@ def play_log(codemaker, codebreaker, nom_fichier):
     pour faire fonctionner vos codemaker et codebreaker (dans le cas contraire,
     ceux-ci ne seront pas considérés comme valables)
     """
+    bef = time.perf_counter()
     n_essais = 0
     codebreaker.init()
     codemaker.init()
@@ -54,6 +56,8 @@ def play_log(codemaker, codebreaker, nom_fichier):
         if ev[0] >= common.LENGTH:
             break
 
+    aft = time.perf_counter()
+    print(aft - bef)
     with open(nom_fichier, mode='w') as fichier:
         for comb, ev in zip(liste_comb, liste_eval):
             fichier.write(f'{comb}\n{ev[0]},{ev[1]}\n')
@@ -124,19 +128,24 @@ if __name__ == '__main__':
     # plt.savefig('Comparaison des codemaker 1 et 2.pdf', dpi=300, format='pdf')
     # print('Finished')
 
-    import codemaker1 as codemaker
-    import codebreaker1 as codebreaker
-    import matplotlib.pyplot as plt
-    import time
+    # import codemaker1 as codemaker
+    # import codebreaker1 as codebreaker
+    # import matplotlib.pyplot as plt
+    # import time
 
-    bef = time.perf_counter()
-    n_essais = 300
-    nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(n_essais)]
-    aft = time.perf_counter()
-    print(aft - bef)
-    plt.suptitle(f'Hist of the number of tries before victory for {n_essais} games')
-    plt.hist(nb_essais, bins=16 - 1, density=True, align='left', rwidth=0.6)
-    sys.stdout.flush()
-    plt.show()
+    # bef = time.perf_counter()
+    # n_essais = 300
+    # nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(n_essais)]
+    # aft = time.perf_counter()
+    # print(aft - bef)
+    # plt.suptitle(f'Hist of the number of tries before victory for {n_essais} games')
+    # plt.hist(nb_essais, bins=16 - 1, density=True, align='left', rwidth=0.6)
+    # sys.stdout.flush()
+    # plt.show()
 
     # play(codemaker, codebreaker, quiet=True)
+
+    import codebreaker3 as codebreaker
+    import codemaker2 as codemaker
+
+    play_log(codemaker, codebreaker, 'log_opti.txt')

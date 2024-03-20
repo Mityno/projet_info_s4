@@ -4,7 +4,9 @@ import itertools
 import random
 import functools
 
-LENGTH = 4
+LENGTH = 4  # original : 4
+# original : COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
+# COLORS = list('ABC')
 COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
 # Notez que vos programmes doivent continuer à fonctionner si on change les valeurs par défaut ci-dessus
 

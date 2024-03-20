@@ -30,7 +30,7 @@ def check_game(filename):
 
 if __name__ == '__main__':
     # print(check_game('log0.txt'))
-    # print(check_game('log_triche.txt'))
+    # print(check_game('log_opti.txt'))
 
-    for i in range(5):
-        print(check_game(f'log/log{i + 1}.txt'))
+    # for i in range(5):
+    #     print(check_game(f'log/log{i + 1}.txt'))
