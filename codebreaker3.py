@@ -39,7 +39,8 @@ def codebreaker(evaluation_p):
         curr_comb_possible = comb_possibles.copy()
 
         # on simule le comportement de codemaker2 pour trouver une solution
-        solution = simu_codemaker_evil(comb_possibles, comb)
+        solution = common.evil_codemaker(comb_possibles, comb)
+        # solution = common.evil_codemaker(tuple(comb_possibles), comb)
         eval_simu = common.evaluation(comb, solution)
 
         # on met une copie de `comp_possible` à jour avec la solution trouvée
@@ -54,35 +55,3 @@ def codebreaker(evaluation_p):
     comb_test = best_comb
     print(comb_test, comb_test in comb_possibles)
     return comb_test
-
-
-def simu_codemaker_evil(comb_possibles, comb_test):
-
-    best_sol = None
-    # le pire cas est d'avoir supprimé toutes les combinaisons
-    best_combs_supprimees = float('inf')
-
-    comb_a_tester = comb_possibles.copy()
-    while comb_a_tester:
-        temp_sol = next(iter(comb_a_tester))
-        comb_a_tester.discard(temp_sol)
-
-        # on va évaluer si comb est une meilleure solution que best_sol
-        temp_eval = common.evaluation(temp_sol, comb_test)
-        temp_combs_supprimees = 0
-
-        for other_comb in comb_possibles:
-            if temp_eval != common.evaluation(other_comb, comb_test):
-                temp_combs_supprimees += 1
-            else:
-                comb_a_tester.discard(other_comb)
-
-        # si on a moins de combinaisons à supprimer, c'est qu'on a trouvé une
-        # "meilleure" solution (elle donne moins d'informations au codebreaker)
-        if temp_combs_supprimees < best_combs_supprimees:
-            best_sol = temp_sol
-            best_combs_supprimees = temp_combs_supprimees
-
-    solution = best_sol
-
-    return solution

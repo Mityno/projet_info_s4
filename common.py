@@ -49,6 +49,45 @@ def maj_possibles(comb_possibles, comb_test, eval_donnee):
     comb_possibles.difference_update(comb_a_supprimer)
 
 
+# @functools.cache
+def evil_codemaker(comb_possibles, comb_test):
+
+    # la combinaison voulue maximise le nombre de possibilités restantes
+    # donc elle minimise le nombre de possibilités supprimées
+    # on utilise cette propriété pour effectuer une selection efficace
+    # sur la totalité des possibilités restantes
+
+    best_sol = None
+    # le pire cas est d'avoir supprimé toutes les combinaisons
+    best_combs_supprimees = float('inf')
+
+    comb_a_tester = comb_possibles.copy()
+    # comb_a_tester = set(comb_possibles)
+    while comb_a_tester:
+        temp_sol = next(iter(comb_a_tester))
+        comb_a_tester.discard(temp_sol)
+
+        # on va évaluer si comb est une meilleure solution que best_sol
+        temp_eval = evaluation(temp_sol, comb_test)
+        temp_combs_supprimees = 0
+
+        for other_comb in comb_possibles:
+            if temp_eval != evaluation(other_comb, comb_test):
+                temp_combs_supprimees += 1
+            else:
+                comb_a_tester.discard(other_comb)
+
+        # si on a moins de combinaisons à supprimer, c'est qu'on a trouvé une
+        # "meilleure" solution (elle donne moins d'informations au codebreaker)
+        if temp_combs_supprimees < best_combs_supprimees:
+            best_sol = temp_sol
+            best_combs_supprimees = temp_combs_supprimees
+
+    solution = best_sol
+
+    return solution
+
+
 if __name__ == '__main__':
     combs_possibles = list(itertools.product(COLORS, repeat=LENGTH))
     solution = random.choice(combs_possibles)
