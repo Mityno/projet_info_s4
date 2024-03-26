@@ -2,10 +2,8 @@
 
 import sys
 import random
-import common  # N'utilisez pas la syntaxe "from common import XXX"
+import common
 import itertools
-
-# explication a demander au prof
 
 def init():
     """

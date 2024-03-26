@@ -42,6 +42,7 @@ def codebreaker(evaluation_p):
         eval_simu = common.evaluation(comb, solution)
 
         # on met une copie de `comp_possible` à jour avec la solution trouvée
+        # qui serait choisie si on jouait `comb`
         common.maj_possibles(curr_comb_possible, comb, eval_simu)
 
         # on fait une sélection de `comb` selon le minimum de la longueur

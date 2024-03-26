@@ -63,8 +63,7 @@ def evil_codemaker(comb_possibles, comb_test):
 
     comb_a_tester = set(comb_possibles)
     while comb_a_tester:
-        temp_sol = next(iter(comb_a_tester))
-        comb_a_tester.discard(temp_sol)
+        temp_sol = comb_a_tester.pop()
 
         # on va évaluer si comb est une meilleure solution que best_sol
         temp_eval = evaluation(temp_sol, comb_test)
@@ -74,6 +73,10 @@ def evil_codemaker(comb_possibles, comb_test):
             if temp_eval != evaluation(other_comb, comb_test):
                 temp_combs_supprimees += 1
             else:
+                # si la combinaison a la même évaluation que `temp_sol`
+                # alors elles jouent le même rôle en temps que solution
+                # possibles, donc il ne sert à rien de tester les deux
+                # séparément
                 comb_a_tester.discard(other_comb)
 
         # si on a moins de combinaisons à supprimer, c'est qu'on a trouvé une
