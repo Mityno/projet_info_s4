@@ -148,6 +148,4 @@ if __name__ == '__main__':
     import codebreaker3 as codebreaker
     import codemaker2 as codemaker
 
-    for i in range(5):
-        play_log(codemaker, codebreaker, f'log_opti/{i}.txt')
-        print()
+    play_log(codemaker, codebreaker, 'log_opti.txt')
