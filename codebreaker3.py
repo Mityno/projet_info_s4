@@ -26,7 +26,6 @@ def codebreaker(evaluation_p):
     global comb_test
 
     if evaluation_p is not None:
-        print(comb_test, evaluation_p)
         common.maj_possibles(comb_possibles, comb_test, evaluation_p)
 
     if len(comb_possibles) == 1:
@@ -39,8 +38,7 @@ def codebreaker(evaluation_p):
         curr_comb_possible = comb_possibles.copy()
 
         # on simule le comportement de codemaker2 pour trouver une solution
-        solution = common.evil_codemaker(comb_possibles, comb)
-        # solution = common.evil_codemaker(tuple(comb_possibles), comb)
+        solution = common.evil_codemaker(tuple(comb_possibles), comb)
         eval_simu = common.evaluation(comb, solution)
 
         # on met une copie de `comp_possible` à jour avec la solution trouvée
@@ -53,5 +51,4 @@ def codebreaker(evaluation_p):
             best_comb = comb
 
     comb_test = best_comb
-    print(comb_test, comb_test in comb_possibles)
     return comb_test

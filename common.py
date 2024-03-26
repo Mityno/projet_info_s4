@@ -6,12 +6,13 @@ import functools
 
 LENGTH = 4  # original : 4
 # original : COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
-# COLORS = list('ABC')
 COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
 # Notez que vos programmes doivent continuer à fonctionner si on change les valeurs par défaut ci-dessus
 
+
 @functools.cache
 def evaluation(essai, reference):
+    # ensure the memoisation is effective for symetric calls
     if reference < essai:
         return evaluation(reference, essai)
 
@@ -49,9 +50,8 @@ def maj_possibles(comb_possibles, comb_test, eval_donnee):
     comb_possibles.difference_update(comb_a_supprimer)
 
 
-# @functools.cache
+@functools.cache
 def evil_codemaker(comb_possibles, comb_test):
-
     # la combinaison voulue maximise le nombre de possibilités restantes
     # donc elle minimise le nombre de possibilités supprimées
     # on utilise cette propriété pour effectuer une selection efficace
@@ -61,8 +61,7 @@ def evil_codemaker(comb_possibles, comb_test):
     # le pire cas est d'avoir supprimé toutes les combinaisons
     best_combs_supprimees = float('inf')
 
-    comb_a_tester = comb_possibles.copy()
-    # comb_a_tester = set(comb_possibles)
+    comb_a_tester = set(comb_possibles)
     while comb_a_tester:
         temp_sol = next(iter(comb_a_tester))
         comb_a_tester.discard(temp_sol)

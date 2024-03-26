@@ -28,8 +28,7 @@ def codemaker(combinaison):
     """
     global solution
 
-    solution = common.evil_codemaker(comb_possibles, combinaison)
-    # solution = common.evil_codemaker(tuple(comb_possibles), combinaison)
+    solution = common.evil_codemaker(tuple(comb_possibles), combinaison)
 
     eval_retour = common.evaluation(solution, combinaison)
     common.maj_possibles(comb_possibles, combinaison, eval_retour)
