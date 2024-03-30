@@ -1,5 +1,5 @@
 import random
-import common  # N'utilisez pas la syntaxe "form random import XXX"
+import common
 import itertools
 
 

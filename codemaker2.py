@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import sys
-import random
 import common
 import itertools
 
@@ -16,8 +15,6 @@ def init():
         ''.join(comb) for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
 
-    solution = random.choice(tuple(comb_possibles))
-
 
 def codemaker(combinaison):
     """
@@ -26,7 +23,7 @@ def codemaker(combinaison):
     """
     global solution
 
-    solution = common.evil_codemaker(tuple(comb_possibles), combinaison)
+    solution = common.evil_codemaker(frozenset(comb_possibles), combinaison)
 
     eval_retour = common.evaluation(solution, combinaison)
     common.maj_possibles(comb_possibles, combinaison, eval_retour)

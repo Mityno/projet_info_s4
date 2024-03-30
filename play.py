@@ -2,7 +2,6 @@
 
 import common
 import numpy as np
-import sys
 import time
 
 
@@ -140,12 +139,23 @@ if __name__ == '__main__':
     # print(aft - bef)
     # plt.suptitle(f'Hist of the number of tries before victory for {n_essais} games')
     # plt.hist(nb_essais, bins=16 - 1, density=True, align='left', rwidth=0.6)
-    # sys.stdout.flush()
+    # print(flush=True)
     # plt.show()
 
     # play(codemaker, codebreaker, quiet=True)
 
     import codebreaker3 as codebreaker
     import codemaker2 as codemaker
+    import os
+    import sys
+    print(f'{common.LENGTH = }')
+    print(f'{len(common.COLORS) = }', flush=True)
 
-    play_log(codemaker, codebreaker, 'log_opti.txt')
+    folder_name = f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}'
+
+    if folder_name not in os.listdir():
+        os.mkdir(folder_name)
+
+    i = int(sys.argv[1])
+    play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
+    print(flush=True)

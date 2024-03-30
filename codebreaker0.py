@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import random
-import common  # N'utilisez pas la syntaxe "form random import XXX"
+import common
 
 
 def init():

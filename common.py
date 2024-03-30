@@ -37,17 +37,14 @@ def evaluation(essai, reference):
 
 
 def donner_possibles(comb_test, eval_donnee):
-    return {comb for comb in itertools.product(COLORS, repeat=LENGTH)
+    return {comb for comb in map(''.join, itertools.product(COLORS, repeat=LENGTH))
             if evaluation(comb, comb_test) == eval_donnee}
 
 
 def maj_possibles(comb_possibles, comb_test, eval_donnee):
-    comb_a_supprimer = set()
-    for comb in comb_possibles:
+    for comb in frozenset(comb_possibles):
         if eval_donnee != evaluation(comb_test, comb):
-            comb_a_supprimer.add(comb)
-    
-    comb_possibles.difference_update(comb_a_supprimer)
+            comb_possibles.discard(comb)
 
 
 @functools.cache
@@ -91,7 +88,7 @@ def evil_codemaker(comb_possibles, comb_test):
 
 
 if __name__ == '__main__':
-    combs_possibles = list(itertools.product(COLORS, repeat=LENGTH))
+    combs_possibles = list(map(''.join, itertools.product(COLORS, repeat=LENGTH)))
     solution = random.choice(combs_possibles)
     longueurs = []
     for comb in combs_possibles:

@@ -6,5 +6,5 @@ __pycache__/
 *.svg
 *.zip
 
-time*.txt
+time*
 log*/
