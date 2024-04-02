@@ -4,6 +4,7 @@ import sys
 import common
 import itertools
 
+
 def init():
     """
     Cette fonction, appellée à chaque début de partie, initialise un certain nombre de

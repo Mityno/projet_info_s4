@@ -133,29 +133,30 @@ if __name__ == '__main__':
     # import time
 
     # bef = time.perf_counter()
-    # n_essais = 300
+    # n_essais = 100
     # nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(n_essais)]
     # aft = time.perf_counter()
     # print(aft - bef)
     # plt.suptitle(f'Hist of the number of tries before victory for {n_essais} games')
     # plt.hist(nb_essais, bins=16 - 1, density=True, align='left', rwidth=0.6)
     # print(flush=True)
+    # plt.tight_layout()
     # plt.show()
 
     # play(codemaker, codebreaker, quiet=True)
 
-    import codebreaker3 as codebreaker
-    import codemaker2 as codemaker
-    import os
-    import sys
-    print(f'{common.LENGTH = }')
-    print(f'{len(common.COLORS) = }', flush=True)
+    # import codebreaker3 as codebreaker
+    # import codemaker2 as codemaker
+    # import os
+    # import sys
+    # print(f'{common.LENGTH = }')
+    # print(f'{len(common.COLORS) = }', flush=True)
 
-    folder_name = f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}'
+    # folder_name = f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}'
 
-    if folder_name not in os.listdir():
-        os.mkdir(folder_name)
+    # if folder_name not in os.listdir():
+    #     os.mkdir(folder_name)
 
-    i = int(sys.argv[1])
-    play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
-    print(flush=True)
+    # i = int(sys.argv[1])
+    # play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
+    # print(flush=True)
