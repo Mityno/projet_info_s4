@@ -35,17 +35,15 @@ def check_game(filename):
     return True
 
 
-# if __name__ == '__main__':
-#         # log_opti_codemaker2_C=8\107.txt
-#         # log_opti_codemaker2_C=8\115.txt
-#     logs_path = r'''
-#         log_opti_codemaker2_C=8\29.txt
-#         log_opti_codemaker2_C=8\42.txt
-#         log_opti_codemaker2_C=8\1.txt
-#         '''.split()
+if __name__ == '__main__':
+        # log_opti_codemaker2_C=8\107.txt
+        # log_opti_codemaker2_C=8\115.txt
+    logs_path = r'''
+        log_opti_codemaker2_C=8\29.txt
+        log_opti_codemaker2_C=8\42.txt
+        log_opti_codemaker2_C=8\1.txt
+        '''.split()
 
-#     for path in logs_path:
-#         check_game(path)
+    for path in logs_path:
+        check_game(path)
 
-filename = "30.txt"
-check_game(filename)

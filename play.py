@@ -95,36 +95,36 @@ if __name__ == '__main__':
     
     # question 3
     
-    import codemaker1 as codemaker1
-    import codebreaker0 as codebreaker
-    import matplotlib.pyplot as plt
-    import time
+    # import codemaker1 as codemaker1
+    # import codebreaker0 as codebreaker
+    # import matplotlib.pyplot as plt
+    # import time
 
-    n = 4_000
+    # n = 4_000
 
-    mid = time.perf_counter()
-    nb_essais_c1 = [play(codemaker1, codebreaker, quiet=True) for i in range(n)]
-    aft = time.perf_counter()
-    print(f'codemaker 1 : {aft - mid:.2f}', flush=True)
-    # print(aft - bef)
+    # mid = time.perf_counter()
+    # nb_essais_c1 = [play(codemaker1, codebreaker, quiet=True) for i in range(n)]
+    # aft = time.perf_counter()
+    # print(f'codemaker 1 : {aft - mid:.2f}', flush=True)
+    # # print(aft - bef)
 
-    set_essais = set(nb_essais_c1)
-    # print(set_essais)
-    bins = np.array(sorted(list(set_essais)))[::50] - 0.5
-    moyenne = sum(nb_essais_c1)/len(nb_essais_c1)
-    # print(bins)
+    # set_essais = set(nb_essais_c1)
+    # # print(set_essais)
+    # bins = np.array(sorted(list(set_essais)))[::50] - 0.5
+    # moyenne = sum(nb_essais_c1)/len(nb_essais_c1)
+    # # print(bins)
 
-    plt.hist(
-        nb_essais_c1,
-        bins=bins, density=True,
-        histtype='bar')
-    # plt.plot(list(range(len(nb_essais))), nb_essais)
-    plt.axvline(moyenne, color='r')
-    plt.xlabel('Nombres d\'essais du codebreaker 0 contre codemaker 1')
-    plt.tight_layout()
-    # plt.show()
-    plt.savefig('Images/Codebreaker0 contre codemaker1.jpg', dpi=300, format='jpg')
-    print('Finished')
+    # plt.hist(
+    #     nb_essais_c1,
+    #     bins=bins, density=True,
+    #     histtype='bar')
+    # # plt.plot(list(range(len(nb_essais))), nb_essais)
+    # plt.axvline(moyenne, color='r')
+    # plt.xlabel('Nombres d\'essais du codebreaker 0 contre codemaker 1')
+    # plt.tight_layout()
+    # # plt.show()
+    # plt.savefig('Images/Codebreaker0 contre codemaker1.jpg', dpi=300, format='jpg')
+    # print('Finished')
     
     # question 4
     
