@@ -1,0 +1,10 @@
+BJGO
+0,1
+RRNN
+1,0
+VRVN
+1,0
+MNOB
+1,2
+MMBN
+4,0

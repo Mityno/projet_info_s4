@@ -55,6 +55,7 @@ def evil_codemaker(comb_possibles, comb_test):
     # sur la totalité des possibilités restantes
 
     best_sol = None
+    best_eval = (0,0)
     # le pire cas est d'avoir supprimé toutes les combinaisons
     best_combs_supprimees = float('inf')
 
@@ -81,8 +82,13 @@ def evil_codemaker(comb_possibles, comb_test):
         if temp_combs_supprimees < best_combs_supprimees:
             best_sol = temp_sol
             best_combs_supprimees = temp_combs_supprimees
-
-    solution = best_sol
+            best_eval = temp_eval
+    
+    # on verifie que l'on a pas gardé la solution final si on l'a regardé en &ere, reformuler
+    if best_eval != (len(comb_test)) and len(comb_possibles) != 1:
+        solution = best_sol
+    else :
+        solution = random.choice(comb_possibles - best_sol)
 
     return solution
 
