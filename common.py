@@ -7,7 +7,6 @@ import functools
 LENGTH = 4  # original : 4
 # original : COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
 COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
-# Notez que vos programmes doivent continuer à fonctionner si on change les valeurs par défaut ci-dessus
 
 
 @functools.cache
@@ -17,18 +16,18 @@ def evaluation(essai, reference):
         return evaluation(reference, essai)
 
     lettres_reference = set(reference)
-    lettres_bien_placees = {lettre : 0 for lettre in lettres_reference}
-    
+    lettres_bien_placees = {lettre: 0 for lettre in lettres_reference}
+
     for let_essai, let_ref in zip(essai, reference):
         if let_essai == let_ref:
             lettres_bien_placees[let_ref] += 1
-    
+
     compteur_mal_placees = 0
     for lettre in lettres_reference:
         compteur_ref = reference.count(lettre)
         compteur_essai = essai.count(lettre)
         bien_placees = lettres_bien_placees[lettre]
-        mal_place = min(compteur_ref - bien_placees, compteur_essai - bien_placees)
+        mal_place = min(compteur_ref, compteur_essai) - bien_placees
         compteur_mal_placees += mal_place
 
     compteur_bien_placees = sum(lettres_bien_placees.values())
@@ -37,8 +36,11 @@ def evaluation(essai, reference):
 
 
 def donner_possibles(comb_test, eval_donnee):
-    return {comb for comb in map(''.join, itertools.product(COLORS, repeat=LENGTH))
-            if evaluation(comb, comb_test) == eval_donnee}
+    return {
+        comb
+        for comb in map(''.join, itertools.product(COLORS, repeat=LENGTH))
+        if evaluation(comb, comb_test) == eval_donnee
+    }
 
 
 def maj_possibles(comb_possibles, comb_test, eval_donnee):
@@ -88,7 +90,9 @@ def evil_codemaker(comb_possibles, comb_test):
 
 
 if __name__ == '__main__':
-    combs_possibles = list(map(''.join, itertools.product(COLORS, repeat=LENGTH)))
+    combs_possibles = list(
+        map(''.join, itertools.product(COLORS, repeat=LENGTH))
+    )
     solution = random.choice(combs_possibles)
     longueurs = []
     for comb in combs_possibles:

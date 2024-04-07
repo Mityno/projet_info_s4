@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 
-import sys
 import common
 import itertools
 
 
 def init():
     """
-    Cette fonction, appellée à chaque début de partie, initialise un certain nombre de
-    variables utilisées par le codemaker
+    Cette fonction, appellée à chaque début de partie, initialise un certain
+    nombre de variables utilisées par le codemaker
     """
     global comb_possibles, solution
 
     comb_possibles = {
-        ''.join(comb) for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
+        ''.join(comb)
+        for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
 
 

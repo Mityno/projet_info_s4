@@ -7,12 +7,13 @@ def init():
     """
     Initialisation de la liste des combinaisons possibles rangées aléatoirement
     """
-    
+
     global comb_possibles
     comb_possibles = {
-        ''.join(comb) for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
+        ''.join(comb)
+        for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
-    
+
     return
 
 

@@ -1,4 +1,3 @@
-import random
 import common
 import itertools
 
@@ -10,7 +9,8 @@ def init():
 
     global comb_possibles, all_combs
     all_combs = {
-        ''.join(comb) for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
+        ''.join(comb)
+        for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
     comb_possibles = all_combs.copy()
 

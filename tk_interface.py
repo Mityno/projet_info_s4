@@ -1,5 +1,7 @@
 import tkinter as tk
+import tkinter.messagebox as messagebox
 import common
+import math
 
 
 # associate each color letter to a tuple :
@@ -16,21 +18,145 @@ COLORS_CONVERSION = {
 }
 # maximum 4 colors per line in the color choice frame
 COLORS_PER_LINE = 4
-FEEDBACK_PER_LINE = 2
+# at least 2 feebacks per line
+FEEDBACK_PER_LINE = max(round(common.LENGTH ** 0.5), 2)
+
+PADY_VALUE = 5
+
+
+class InvalidCombinationError(Exception):
+    pass
 
 
 class GameWindow(tk.Tk):
 
-    def __init__(self):
+    def __init__(self, codemaker, n_memory=8):
         super().__init__()
+        self['bg'] = 'white'
+        self.resizable(False, False)
 
-        self.mainloop()
+        self.n_memory = n_memory
+        self.codemaker = codemaker
+        self.codemaker.init()
+        print(self.codemaker.solution, flush=True)
+
+        SCREEN_WIDTH = self.winfo_screenwidth()
+        SCREEN_HEIGHT = self.winfo_screenheight()
+        self.ROOT_WIDTH = int(SCREEN_WIDTH / 2.5)
+        ROOT_HEIGHT = SCREEN_HEIGHT // 2
+        LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
+        UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
+        self.geometry(
+            f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'
+            f'+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
+        )
+
+        placeholder_button = tk.Button(
+            self, height=3, width=7,
+        )
+
+        ROW_MIN_HEIGHT = placeholder_button.winfo_reqheight()
+
+        self.top_frame = tk.Frame(
+            self, height=ROW_MIN_HEIGHT*self.n_memory, bg='white'
+        )
+        self.bottom_frame = tk.Frame(
+            self, height=ROW_MIN_HEIGHT*3, bg='white', bd=5
+        )
+
+        self.result_frames = []
+        for i in range(self.n_memory):
+            curr_frame = GuessResultFrame(
+                self.top_frame, '', (0, 0), self.ROOT_WIDTH
+            )
+            curr_frame.grid(row=i)
+            self.result_frames.append(curr_frame)
+
+        self.colors_frame = ColorSelectionFrame(self.bottom_frame)
+        self.guess_frame = CurrGuessFrame(
+            self.bottom_frame, self.colors_frame, self.ROOT_WIDTH
+        )
+        self.guess_frame.set_command(self.make_move)
+
+        self.guess_frame.pack()
+        self.colors_frame.pack()
+
+        self.top_frame.pack()
+        self.bottom_frame.pack()
+
+        ROOT_HEIGHT = (
+            self.top_frame.winfo_reqheight()
+            + self.bottom_frame.winfo_reqheight()
+            + PADY_VALUE * (2 * self.n_memory + 4)
+        )
+        LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
+        UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
+        self.geometry(
+            f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'
+            f'+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
+        )
+
+    def make_move(self):
+        try:
+            comb = self.guess_frame.get_combination()
+        except InvalidCombinationError:
+            messagebox.showinfo(
+                'Combinaison invalide',
+                'La combinaison essayée n\'est pas valide.',
+                detail='Assurez vous d\'avoir rentré '
+                'toutes les couleurs avant de valider.',
+                icon='question'
+                )
+            return
+
+        feedback = self.codemaker.codemaker(comb)
+        new_result_frame = GuessResultFrame(
+            self.top_frame, comb, feedback, self.ROOT_WIDTH
+        )
+
+        for curr_frame in self.result_frames:
+            curr_frame.grid_forget()
+
+        self.result_frames.pop(0)
+        self.result_frames.append(new_result_frame)
+
+        for i, curr_frame in enumerate(self.result_frames):
+            curr_frame.grid(row=i)
+
+        # le joueur n'a pas encore gagné
+        if feedback != (common.LENGTH, 0):
+            return
+
+        user_choice = messagebox.askyesno(
+            'Fin de partie',
+            'Bravo, vous avez gagné !\nVoulez vous rejouer ?',
+            icon='info'
+            )
+
+        if user_choice:
+            self.reboot()
+        else:
+            self.destroy()
+
+    def reboot(self):
+        self.codemaker.init()
+        print(self.codemaker.solution, flush=True)
+
+        for curr_frame in self.result_frames:
+            curr_frame.grid_forget()
+
+        self.result_frames = []
+        for i in range(self.n_memory):
+            curr_frame = GuessResultFrame(
+                self.top_frame, '', (0, 0), self.ROOT_WIDTH
+            )
+            curr_frame.grid(row=i)
+            self.result_frames.append(curr_frame)
 
 
-class OneGuessFrame(tk.Frame):
+class GuessResultFrame(tk.Frame):
 
-
-    def __init__(self, parent, combination, feedback):
+    def __init__(self, parent, combination, feedback, ROOT_WIDTH):
         super().__init__(parent)
         self['bg'] = 'white'
 
@@ -43,18 +169,20 @@ class OneGuessFrame(tk.Frame):
 
         feedback_canvas = tk.Canvas(
             self, width=FEEDBACK_WIDTH, height=FEEDBACK_HEIGHT,
-            bg='yellow',
+            bg='#ca6f1e',
             border=0, highlightthickness=0
         )
 
-        feedback_colors = ['red'] * feedback[0] + ['white'] * feedback[1]
-        feedback_colors += [''] * (common.LENGTH - len(feedback_colors))
+        feedback_colors = ['white'] * feedback[0] + ['red'] * feedback[1]
+        feedback_colors += ['#f0b27a'] * (common.LENGTH - len(feedback_colors))
 
+        CELL_WIDTH = FEEDBACK_WIDTH / FEEDBACK_PER_LINE
+        n_lines = math.ceil(common.LENGTH / FEEDBACK_PER_LINE)
+        CELL_HEIGHT = FEEDBACK_HEIGHT / n_lines
 
-        CELL_WIDTH = FEEDBACK_WIDTH // FEEDBACK_PER_LINE
-        CELL_HEIGHT = FEEDBACK_HEIGHT // (common.LENGTH // FEEDBACK_PER_LINE)
-
-        FEEDBACK_RADIUS = (CELL_WIDTH * 0.8) // 2
+        FEEDBACK_RADIUS = math.ceil(
+            (CELL_WIDTH * 0.8) / max(n_lines, FEEDBACK_PER_LINE)
+        )
 
         for index, feedback_color in enumerate(feedback_colors):
 
@@ -64,21 +192,23 @@ class OneGuessFrame(tk.Frame):
             y_center = CELL_HEIGHT * (y_pos + 1/2)
 
             top_left = (x_center - FEEDBACK_RADIUS, y_center - FEEDBACK_RADIUS)
-            bottom_right = (x_center + FEEDBACK_RADIUS, y_center + FEEDBACK_RADIUS)
+            bottom_right = (
+                x_center + FEEDBACK_RADIUS, y_center + FEEDBACK_RADIUS
+            )
 
             feedback_canvas.create_oval(
                 *top_left, *bottom_right,
                 fill=feedback_color
                 )
 
-        feedback_canvas.grid(row=0, column=1, padx=5, pady=5)
+        feedback_canvas.grid(row=0, column=1, padx=5, pady=PADY_VALUE)
 
-        CANVAS_WIDTH = (ROOT_WIDTH - FEEDBACK_WIDTH) * 0.95
+        CANVAS_WIDTH = (ROOT_WIDTH - FEEDBACK_WIDTH) * 0.97
         CANVAS_HEIGHT = FEEDBACK_HEIGHT
 
         self.choices_canvas = tk.Canvas(
             self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT,
-            bg='yellow',
+            bg='#ca6f1e',
             border=0, highlightthickness=0,
         )
         self.choices_canvas.grid(row=0, column=0, padx=5)
@@ -88,8 +218,6 @@ class OneGuessFrame(tk.Frame):
         CELL_HEIGHT = CANVAS_HEIGHT
 
         CIRCLE_RADIUS = (CELL_HEIGHT * 0.8) / 2
-
-        choices_id = []
 
         color_names = [
             COLORS_CONVERSION[color_value][1][0]
@@ -109,33 +237,33 @@ class OneGuessFrame(tk.Frame):
             )
 
 
-
 class CurrGuessFrame(tk.Frame):
 
-    def __init__(self, parent, color_selector):
+    def __init__(self, parent, color_selector, ROOT_WIDTH):
         super().__init__(parent)
         self['bg'] = 'white'
 
         self.color_selector = color_selector
+        self.colors_value = [None] * common.LENGTH
 
-        check_button = tk.Button(
+        self.check_button = tk.Button(
             self, text='Valider',
             bg='#27ff00', activebackground='#a7ff96',
             highlightbackground='#a7ff96',
             relief=tk.FLAT, overrelief=tk.RIDGE,
             height=3, width=7,
         )
-        check_button.grid(row=0, column=1, padx=5, pady=5)
+        self.check_button.grid(row=0, column=1, padx=5, pady=PADY_VALUE)
 
-        BUTTON_WIDTH = check_button.winfo_reqwidth()
-        BUTTON_HEIGHT = check_button.winfo_reqheight()
+        BUTTON_WIDTH = self.check_button.winfo_reqwidth()
+        BUTTON_HEIGHT = self.check_button.winfo_reqheight()
 
-        CANVAS_WIDTH = (ROOT_WIDTH - BUTTON_WIDTH) * 0.95
+        CANVAS_WIDTH = (ROOT_WIDTH - BUTTON_WIDTH) * 0.97
         CANVAS_HEIGHT = BUTTON_HEIGHT
 
         self.choices_canvas = tk.Canvas(
             self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT,
-            bg='yellow',
+            bg='#ca6f1e',
             border=0, highlightthickness=0,
         )
         self.choices_canvas.grid(row=0, column=0, padx=5)
@@ -154,19 +282,28 @@ class CurrGuessFrame(tk.Frame):
             top_left = (x_center - CIRCLE_RADIUS, y_center - CIRCLE_RADIUS)
             bottom_right = (x_center + CIRCLE_RADIUS, y_center + CIRCLE_RADIUS)
 
-            circle_id = self.choices_canvas.create_oval(*top_left, *bottom_right, fill='white')
+            circle_id = self.choices_canvas.create_oval(
+                *top_left, *bottom_right, fill='white'
+            )
             self.choices_canvas.tag_bind(
-                circle_id, '<Button-1>',
-                func=lambda event, circle_id=circle_id: self.change_choice_color(circle_id)
-                )
+                circle_id, '<Button-1>', func=self.change_choice_color
+            )
 
+    def set_command(self, func):
+        self.check_button['command'] = func
 
-    def change_choice_color(self, circle_id):
+    def change_choice_color(self, event, circle_id):
         color_value = self.color_selector.get_value()
+        self.colors_value[circle_id - 1] = color_value
         _, (color_name, _), _ = COLORS_CONVERSION[color_value]
         self.choices_canvas.itemconfigure(
             circle_id, fill=color_name
         )
+
+    def get_combination(self):
+        if None in self.colors_value:
+            raise InvalidCombinationError(self.colors_value)
+        return ''.join(self.colors_value[:])
 
 
 class ColorSelectionFrame(tk.Frame):
@@ -200,7 +337,7 @@ class ColorSelectionFrame(tk.Frame):
             column = index % COLORS_PER_LINE
             button.grid(
                 row=line, column=column,
-                pady=10, padx=10,
+                pady=2 * PADY_VALUE, padx=10,
             )
             self.color_buttons.append(button)
 
@@ -208,27 +345,11 @@ class ColorSelectionFrame(tk.Frame):
         return self.curr_color.get()
 
 
+class SettingsFrame(tk.Frame):
+    pass
+
+
 if __name__ == '__main__':
-    # window = GameWindow()
-    root = tk.Tk()
-    root['bg'] = 'white'
-
-    SCREEN_WIDTH = root.winfo_screenwidth()
-    SCREEN_HEIGHT = root.winfo_screenheight()
-    ROOT_WIDTH, ROOT_HEIGHT = int(SCREEN_WIDTH / 2.5), SCREEN_HEIGHT // 2
-    LEFT_BORDER_POS = (SCREEN_WIDTH - ROOT_WIDTH) // 2
-    UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
-    root.geometry(
-        f'{ROOT_WIDTH}x{ROOT_HEIGHT}+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
-    )
-
-    one_guess_frame = OneGuessFrame(root, 'NGJM', (1, 3))
-
-    colors_frame = ColorSelectionFrame(root)
-    guess_frame = CurrGuessFrame(root, colors_frame)
-
-    one_guess_frame.pack()
-    guess_frame.pack()
-    colors_frame.pack()
-
-    root.mainloop()
+    import codemaker1
+    window = GameWindow(codemaker1, n_memory=8)
+    window.mainloop()

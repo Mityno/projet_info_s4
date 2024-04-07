@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 
-import sys
 import random
 import common
 import itertools
 
-# explication a demander au prof
 
 def init():
     """
-    Cette fonction, appellée à chaque début de partie, initialise un certain nombre de
-    variables utilisées par le codemaker
+    Cette fonction, appellée à chaque début de partie, initialise un certain
+    nombre de variables utilisées par le codemaker
     """
     global solution, comb_possibles, all_comb
 
