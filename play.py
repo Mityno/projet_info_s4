@@ -140,3 +140,8 @@ if __name__ == '__main__':
     # i = int(sys.argv[1])
     # play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
     # print(flush=True)
+
+    import codemaker2 as codemaker
+    import codebreaker3 as codebreaker
+
+    print(play(codemaker, codebreaker))
