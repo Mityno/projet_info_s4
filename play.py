@@ -125,23 +125,29 @@ if __name__ == '__main__':
 
     # play(codemaker, codebreaker, quiet=True)
 
-    # import codebreaker3 as codebreaker
-    # import codemaker2 as codemaker
-    # import os
-    # import sys
-    # print(f'{common.LENGTH = }')
-    # print(f'{len(common.COLORS) = }', flush=True)
-
-    # folder_name = f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}'
-
-    # if folder_name not in os.listdir():
-    #     os.mkdir(folder_name)
-
-    # i = int(sys.argv[1])
-    # play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
-    # print(flush=True)
-
-    import codemaker2 as codemaker
     import codebreaker3 as codebreaker
+    import codemaker1 as codemaker
+    import os
+    import sys
+    print(f'{common.LENGTH = }')
+    print(f'{len(common.COLORS) = }', flush=True)
 
-    print(play(codemaker, codebreaker))
+    folder_name = f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}'
+
+    if folder_name not in os.listdir():
+        os.mkdir(folder_name)
+
+    if len(sys.argv) >= 2:
+        d = int(sys.argv[1])
+    else:
+        d = 1
+    if len(sys.argv) >= 3:
+        f = int(sys.argv[2])
+    else:
+        f = d
+
+    print(f'Tries counter : {d} {f} (total of {f - d + 1} games)')
+    print(f'Playing : {codebreaker.__name__} vs {codemaker.__name__}')
+    for i in range(d, f + 1):
+        play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
+        print(flush=True)
