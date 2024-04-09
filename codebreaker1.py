@@ -7,9 +7,12 @@ def init():
     """
     Initialisation de la liste des combinaisons possibles rangées aléatoirement
     """
-    
-    global liste_possible    
-    liste_possible = list(itertools.product(common.COLORS, repeat=common.LENGTH))
+
+    global liste_possible
+    liste_possible = [
+        ''.join(comb)
+        for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
+    ]
     # les combinaisons sont rangées aléatoirement
     # on n'a plus besoin de les tirer au hasard
     random.shuffle(liste_possible)
@@ -23,5 +26,5 @@ def codebreaker(evaluation_p):
     partie). Cette version triviale n'utilise pas cette information, puisqu'
     elle joue au hasard, mais ne propose pas deux fois la même valeur.
     """
-    
+
     return ''.join(liste_possible.pop())

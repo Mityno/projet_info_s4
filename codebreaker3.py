@@ -1,4 +1,3 @@
-import random
 import common
 import itertools
 
@@ -8,11 +7,13 @@ def init():
     Initialisation de la liste des combinaisons possibles rangées aléatoirement
     """
 
-    global comb_possibles, all_combs
+    global comb_possibles, all_combs, comb_test
     all_combs = {
-        ''.join(comb) for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
+        ''.join(comb)
+        for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
     comb_possibles = all_combs.copy()
+    comb_test = ''
 
     return
 
@@ -53,6 +54,12 @@ def codebreaker(evaluation_p):
         if len(curr_comb_possible) < best_length:
             best_length = len(curr_comb_possible)
             best_comb = comb
+
+    # on a choisi une solution non optimale car égale à celle que le
+    # codebreaker a essayé alors qu'il en existe d'autres
+    if best_comb == comb_test and len(comb_possibles) > 1:
+        # on choisit n'importe quelle autre solution
+        best_comb = set(comb_possibles - {comb_test}).pop()
 
     comb_test = best_comb
     return comb_test

@@ -1,4 +1,3 @@
-import codemaker2 as codemaker
 import common
 import itertools
 
@@ -14,7 +13,8 @@ def check_game(filename):
     evs = [tuple(map(int, ev.split(','))) for ev in evs]
 
     comb_possibles = {
-        ''.join(comb) for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
+        ''.join(comb)
+        for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
     print(len(comb_possibles))
     print()
@@ -36,8 +36,8 @@ def check_game(filename):
 
 
 if __name__ == '__main__':
-        # log_opti_codemaker2_C=8\107.txt
-        # log_opti_codemaker2_C=8\115.txt
+    # log_opti_codemaker2_C=8\107.txt
+    # log_opti_codemaker2_C=8\115.txt
     logs_path = r'''
         log_opti_codemaker2_C=8\29.txt
         log_opti_codemaker2_C=8\42.txt
