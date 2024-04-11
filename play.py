@@ -172,39 +172,39 @@ if __name__ == '__main__':
     # plt.savefig('Images/Codebreaker2 contre codemaker1.jpg', dpi=300, format='jpg')
     # print('Finished')
     
-    import codemaker1 as codemaker1
-    import codemaker2 as codemaker2
-    import codebreaker2 as codebreaker
-    import matplotlib.pyplot as plt
-    import time
+    # import codemaker1 as codemaker1
+    # import codemaker2 as codemaker2
+    # import codebreaker2 as codebreaker
+    # import matplotlib.pyplot as plt
+    # import time
 
-    n = 2_000
+    # n = 2_000
 
-    bef = time.perf_counter()
-    nb_essais_c2 = [play(codemaker2, codebreaker, quiet=True) for i in range(n)]
-    mid = time.perf_counter()
-    print(f'codemaker 2 : {mid - bef:.2f}', flush=True)
-    nb_essais_c1 = [play(codemaker1, codebreaker, quiet=True) for i in range(n)]
-    aft = time.perf_counter()
-    print(f'codemaker 1 : {aft - mid:.2f}', flush=True)
-    # print(aft - bef)
+    # bef = time.perf_counter()
+    # nb_essais_c2 = [play(codemaker2, codebreaker, quiet=True) for i in range(n)]
+    # mid = time.perf_counter()
+    # print(f'codemaker 2 : {mid - bef:.2f}', flush=True)
+    # nb_essais_c1 = [play(codemaker1, codebreaker, quiet=True) for i in range(n)]
+    # aft = time.perf_counter()
+    # print(f'codemaker 1 : {aft - mid:.2f}', flush=True)
+    # # print(aft - bef)
 
-    set_essais = set(nb_essais_c1) | set(nb_essais_c2)
-    print(set_essais)
-    bins = np.array(sorted(list(set_essais))) - 0.5
-    print(bins)
+    # set_essais = set(nb_essais_c1) | set(nb_essais_c2)
+    # print(set_essais)
+    # bins = np.array(sorted(list(set_essais))) - 0.5
+    # print(bins)
 
-    plt.hist(
-        (nb_essais_c1, nb_essais_c2),
-        bins=bins, density=True,
-        label=('Codemaker 1', 'Codemaker 2'), histtype='bar')
-    # plt.plot(list(range(len(nb_essais))), nb_essais)
-    plt.xlabel('Nombres d\'essais du codebreaker 2')
-    plt.legend()
-    plt.tight_layout()
-    # plt.show()
-    plt.savefig('Images/Comparaison des codemaker 1 et 2.jpg', dpi=300, format='jpg')
-    print('Finished')
+    # plt.hist(
+    #     (nb_essais_c1, nb_essais_c2),
+    #     bins=bins, density=True,
+    #     label=('Codemaker 1', 'Codemaker 2'), histtype='bar')
+    # # plt.plot(list(range(len(nb_essais))), nb_essais)
+    # plt.xlabel('Nombres d\'essais du codebreaker 2')
+    # plt.legend()
+    # plt.tight_layout()
+    # # plt.show()
+    # plt.savefig('Images/Comparaison des codemaker 1 et 2.jpg', dpi=300, format='jpg')
+    # print('Finished')
 
     # import codemaker1 as codemaker
     # import codebreaker1 as codebreaker
@@ -241,52 +241,66 @@ if __name__ == '__main__':
     # print(flush=True)
 
 
-    import codemaker1 as codemaker1
+    # import codemaker1 as codemaker1
+    # import codebreaker3 as codebreaker
+    # import matplotlib.pyplot as plt
+    # import time
+    # import codemaker1 as codemaker
+    # import os
+    # import sys
+    # print(f'{common.LENGTH = }')
+    # print(f'{len(common.COLORS) = }', flush=True)
+
+    # n = 3
+
+    # bef = time.perf_counter()
+    
+    # nb_essais_c2 = [play(codemaker2, codebreaker, quiet=True) for i in range(n)]
+    # mid = time.perf_counter()
+    # print(f'codemaker 2 : {mid - bef:.2f}', flush=True)
+    
+
+    # set_essais = set(nb_essais_c1)
+    # print(set_essais)
+    # bins = np.array(sorted(list(set_essais))) - 0.5
+    # print(bins)
+
+    # plt.hist(
+    #     nb_essais_c1,
+    #     bins=bins, density=True,
+    #     label=('Codemaker 1', 'Codemaker 2'), histtype='bar')
+    # # plt.plot(list(range(len(nb_essais))), nb_essais)
+    # plt.xlabel('Nombres d\'essais du codebreaker 3 contre le codemaker 1')
+    # plt.legend()
+    # plt.tight_layout()
+    # # plt.show()
+    # plt.savefig('Images/Nombre esssais du codebreaker 3 contre le codemaker 1.jpg', dpi=300, format='jpg')
+    # print('Finished')
+    # if len(sys.argv) >= 2:
+    #     d = int(sys.argv[1])
+    # else:
+    #     d = 1
+    # if len(sys.argv) >= 3:
+    #     f = int(sys.argv[2])
+    # else:
+    #     f = d
+
+    # print(f'Tries counter : {d} {f} (total of {f - d + 1} games)')
+    # print(f'Playing : {codebreaker.__name__} vs {codemaker.__name__}')
+    # for i in range(d, f + 1):
+    #     play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
+    #     print(flush=True)
+    
+    # # question 12 codemaker3 contre codemaker1 log
+    
+    import codemaker1 as codemaker
     import codebreaker3 as codebreaker
     import matplotlib.pyplot as plt
     import time
-    import codemaker1 as codemaker
-    import os
-    import sys
-    print(f'{common.LENGTH = }')
-    print(f'{len(common.COLORS) = }', flush=True)
-
-    n = 3
-
-    bef = time.perf_counter()
     
-    nb_essais_c2 = [play(codemaker2, codebreaker, quiet=True) for i in range(n)]
-    mid = time.perf_counter()
-    print(f'codemaker 2 : {mid - bef:.2f}', flush=True)
+    n = 200
     
-
-    set_essais = set(nb_essais_c1)
-    print(set_essais)
-    bins = np.array(sorted(list(set_essais))) - 0.5
-    print(bins)
-
-    plt.hist(
-        nb_essais_c1,
-        bins=bins, density=True,
-        label=('Codemaker 1', 'Codemaker 2'), histtype='bar')
-    # plt.plot(list(range(len(nb_essais))), nb_essais)
-    plt.xlabel('Nombres d\'essais du codebreaker 3 contre le codemaker 1')
-    plt.legend()
-    plt.tight_layout()
-    # plt.show()
-    plt.savefig('Images/Nombre esssais du codebreaker 3 contre le codemaker 1.jpg', dpi=300, format='jpg')
-    print('Finished')
-    if len(sys.argv) >= 2:
-        d = int(sys.argv[1])
-    else:
-        d = 1
-    if len(sys.argv) >= 3:
-        f = int(sys.argv[2])
-    else:
-        f = d
-
-    print(f'Tries counter : {d} {f} (total of {f - d + 1} games)')
-    print(f'Playing : {codebreaker.__name__} vs {codemaker.__name__}')
-    for i in range(d, f + 1):
-        play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
-        print(flush=True)
+    for i in range(n):
+        play_log(codemaker, codebreaker, f'Log/log_codemaker1_codebraker2_{i}.txt')
+    
+    
