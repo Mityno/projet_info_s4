@@ -32,7 +32,8 @@ class GameWindow(tk.Tk):
 
     def __init__(self, codemaker, n_memory=8):
         super().__init__()
-        self['bg'] = 'white'
+        self['bg'] = '#d3926c'
+        self.title('Mastermind')
         self.resizable(False, False)
 
         self.n_memory = n_memory
@@ -42,7 +43,7 @@ class GameWindow(tk.Tk):
 
         SCREEN_WIDTH = self.winfo_screenwidth()
         SCREEN_HEIGHT = self.winfo_screenheight()
-        self.ROOT_WIDTH = int(SCREEN_WIDTH / 2.5)
+        self.ROOT_WIDTH = int(SCREEN_WIDTH / 3)
         ROOT_HEIGHT = SCREEN_HEIGHT // 2
         LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
         UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
@@ -58,10 +59,10 @@ class GameWindow(tk.Tk):
         ROW_MIN_HEIGHT = placeholder_button.winfo_reqheight()
 
         self.top_frame = tk.Frame(
-            self, height=ROW_MIN_HEIGHT*self.n_memory, bg='white'
+            self, height=ROW_MIN_HEIGHT*self.n_memory, bg=self['bg']
         )
         self.bottom_frame = tk.Frame(
-            self, height=ROW_MIN_HEIGHT*3, bg='white', bd=5
+            self, height=ROW_MIN_HEIGHT*3, bg=self['bg']
         )
 
         self.result_frames = []
@@ -69,7 +70,7 @@ class GameWindow(tk.Tk):
             curr_frame = GuessResultFrame(
                 self.top_frame, '', (0, 0), self.ROOT_WIDTH
             )
-            curr_frame.grid(row=i)
+            curr_frame.grid(row=i, pady=2)
             self.result_frames.append(curr_frame)
 
         self.colors_frame = ColorSelectionFrame(self.bottom_frame)
@@ -87,7 +88,7 @@ class GameWindow(tk.Tk):
         ROOT_HEIGHT = (
             self.top_frame.winfo_reqheight()
             + self.bottom_frame.winfo_reqheight()
-            + PADY_VALUE * (2 * self.n_memory + 4)
+            + PADY_VALUE * (3 * self.n_memory)
         )
         LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
         UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
@@ -158,7 +159,7 @@ class GuessResultFrame(tk.Frame):
 
     def __init__(self, parent, combination, feedback, ROOT_WIDTH):
         super().__init__(parent)
-        self['bg'] = 'white'
+        self['bg'] = parent['bg']
 
         placeholder_button = tk.Button(
             self, height=3, width=7,
@@ -169,7 +170,7 @@ class GuessResultFrame(tk.Frame):
 
         feedback_canvas = tk.Canvas(
             self, width=FEEDBACK_WIDTH, height=FEEDBACK_HEIGHT,
-            bg='#ca6f1e',
+            bg='#ad6944',
             border=0, highlightthickness=0
         )
 
@@ -198,18 +199,18 @@ class GuessResultFrame(tk.Frame):
 
             feedback_canvas.create_oval(
                 *top_left, *bottom_right,
-                fill=feedback_color
+                fill=feedback_color, width=0
                 )
 
         feedback_canvas.grid(row=0, column=1, padx=5, pady=PADY_VALUE)
 
-        CANVAS_WIDTH = (ROOT_WIDTH - FEEDBACK_WIDTH) * 0.97
+        CANVAS_WIDTH = (ROOT_WIDTH - FEEDBACK_WIDTH) * 0.95
         CANVAS_HEIGHT = FEEDBACK_HEIGHT
 
         self.choices_canvas = tk.Canvas(
             self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT,
-            bg='#ca6f1e',
-            border=0, highlightthickness=0,
+            bg='#d38053', highlightbackground='#ad6944',
+            border=0, highlightthickness=3,
         )
         self.choices_canvas.grid(row=0, column=0, padx=5)
 
@@ -227,13 +228,14 @@ class GuessResultFrame(tk.Frame):
         for cell_num, color_name in zip(range(common.LENGTH), color_names):
 
             x_center = CELL_WIDTH * (cell_num + 1/2)
-            y_center = CELL_HEIGHT // 2
+            y_center = CELL_HEIGHT // 2 + 2
 
             top_left = (x_center - CIRCLE_RADIUS, y_center - CIRCLE_RADIUS)
             bottom_right = (x_center + CIRCLE_RADIUS, y_center + CIRCLE_RADIUS)
 
             self.choices_canvas.create_oval(
-                *top_left, *bottom_right, fill=color_name
+                *top_left, *bottom_right,
+                fill=color_name, width=0
             )
 
 
@@ -241,7 +243,7 @@ class CurrGuessFrame(tk.Frame):
 
     def __init__(self, parent, color_selector, ROOT_WIDTH):
         super().__init__(parent)
-        self['bg'] = 'white'
+        self['bg'] = parent['bg']
 
         self.color_selector = color_selector
         self.colors_value = [None] * common.LENGTH
@@ -258,13 +260,13 @@ class CurrGuessFrame(tk.Frame):
         BUTTON_WIDTH = self.check_button.winfo_reqwidth()
         BUTTON_HEIGHT = self.check_button.winfo_reqheight()
 
-        CANVAS_WIDTH = (ROOT_WIDTH - BUTTON_WIDTH) * 0.97
+        CANVAS_WIDTH = (ROOT_WIDTH - BUTTON_WIDTH) * 0.95
         CANVAS_HEIGHT = BUTTON_HEIGHT
 
         self.choices_canvas = tk.Canvas(
             self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT,
-            bg='#ca6f1e',
-            border=0, highlightthickness=0,
+            bg='#d38053', highlightbackground='#ad6944',
+            border=0, highlightthickness=3,
         )
         self.choices_canvas.grid(row=0, column=0, padx=5)
 
@@ -277,13 +279,14 @@ class CurrGuessFrame(tk.Frame):
         for cell_num in range(common.LENGTH):
 
             x_center = CELL_WIDTH * (cell_num + 1/2)
-            y_center = CELL_HEIGHT // 2
+            y_center = CELL_HEIGHT / 2 + 2
 
             top_left = (x_center - CIRCLE_RADIUS, y_center - CIRCLE_RADIUS)
             bottom_right = (x_center + CIRCLE_RADIUS, y_center + CIRCLE_RADIUS)
 
             circle_id = self.choices_canvas.create_oval(
-                *top_left, *bottom_right, fill='white'
+                *top_left, *bottom_right,
+                fill='white', width=0
             )
             self.choices_canvas.tag_bind(
                 circle_id, '<Button-1>', func=self.change_choice_color
@@ -292,7 +295,8 @@ class CurrGuessFrame(tk.Frame):
     def set_command(self, func):
         self.check_button['command'] = func
 
-    def change_choice_color(self, event, circle_id):
+    def change_choice_color(self, event):
+        circle_id, = self.choices_canvas.find_closest(event.x, event.y)
         color_value = self.color_selector.get_value()
         self.colors_value[circle_id - 1] = color_value
         _, (color_name, _), _ = COLORS_CONVERSION[color_value]
@@ -310,7 +314,7 @@ class ColorSelectionFrame(tk.Frame):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self['bg'] = 'white'
+        self['bg'] = parent['bg']
 
         self.color_buttons = []
         self.curr_color = tk.StringVar(value=common.COLORS[0])
