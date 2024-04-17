@@ -97,16 +97,16 @@ class GameWindow(tk.Tk):
         )
         self.guess_frame.set_command(self.make_move)
 
-        if 'settings_frame' not in vars(self):
-            self.settings_frame = SettingsFrame(self.bottom_frame, self.reset)
-
         self.guess_frame.grid(row=0, columnspan=2, pady=5)
         self.colors_frame.grid(row=1, column=0)
-        self.settings_frame.grid(row=1, column=1)
-
         if init:
             self.colors_frame.update()
             self.bottom_frame.columnconfigure(0, minsize=self.colors_frame.winfo_reqwidth())
+            self.bottom_frame.rowconfigure(1, minsize=self.colors_frame.winfo_reqheight())
+
+        if 'settings_frame' not in vars(self):
+            self.settings_frame = SettingsFrame(self.bottom_frame, self.reset)
+        self.settings_frame.grid(row=1, column=1)
 
         self.top_frame.grid(row=0)
         self.bottom_frame.grid(row=1)
