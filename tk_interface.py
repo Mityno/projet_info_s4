@@ -452,6 +452,9 @@ class SettingsFrame(tk.LabelFrame):
 
 if __name__ == '__main__':
     import codemaker1
+
+    # réduire n_memory pour les écrans de faible hauteur afin que la fenêtre
+    # ne soit pas trop grande verticalement
     window = GameWindow(codemaker1, n_memory=8)
     window.mainloop()
 
