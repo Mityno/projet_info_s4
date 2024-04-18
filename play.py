@@ -36,9 +36,8 @@ def play_log(codemaker, codebreaker, nom_fichier):
     Fait jouer ensemble le codebreaker et le codemaker donnés en arguments
     Renvoie le nombre de coups joués pour trouver la solution
 
-    Attention, il ne *doit* pas être nécessaire de modifier cette fonction
-    pour faire fonctionner vos codemaker et codebreaker (dans le cas contraire,
-    ceux-ci ne seront pas considérés comme valables)
+    Elle a la particularité d'écrire les logs de la partie dans le fichier dont
+    le nom est donné en argument
     """
     bef = time.perf_counter()
     n_essais = 0
@@ -66,7 +65,6 @@ def play_log(codemaker, codebreaker, nom_fichier):
 
 
 if __name__ == '__main__':
-    ...
 
     # import codemaker_triche as codemaker
     # import codebreaker_triche as codebreaker

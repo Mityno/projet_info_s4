@@ -3,30 +3,40 @@ import itertools
 
 
 def check_game(filename):
+
+    """
+    Vérifie que la partie jouée dans le fichier log de chemin `filename` n'a
+    pas été trichée. Renvoie True si la partie est sans triche, False sinon.
+    """
+
     with open(filename, mode='r') as file:
         datas = file.read()
 
+    # on sépare toutes les lignes
     datas = datas.strip().split()
-    # print(repr(datas))
     it = iter(datas)
+
+    # zip(it, it) permet de récupérer les couples (combinaison, évaluation)
+    # le second zip permet de les séparer en deux tuples respectivement
+    # de combinaisons et d'évaluations (sous forme de strings)
     combs, evs = zip(*zip(it, it))
+    # on convertit les évaluations en des couples d'entiers
     evs = [tuple(map(int, ev.split(','))) for ev in evs]
 
+    # on va simuler le comportement du cobebreaker 2 : on "joue" les coups
+    # qui sont présents dans les logs, et on voit si les évaluations mènent
+    # à une situation où plus aucun coups n'est possible, auquel cas le
+    # codemaker a triché
     comb_possibles = {
         ''.join(comb)
         for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
-    print(len(comb_possibles))
-    print()
 
     for comb, ev in zip(combs, evs):
-        print(comb, ev)
         common.maj_possibles(comb_possibles, comb, ev)
-        print(len(comb_possibles))
-        if len(comb_possibles) <= 10:
-            print(comb_possibles)
-        print()
 
+        # la "solution" du codemaker n'existe plus dans les combinaisons
+        # possibles : il a triché
         if not comb_possibles:
             print('Le codemaker a triché')
             return False
@@ -36,13 +46,11 @@ def check_game(filename):
 
 
 if __name__ == '__main__':
-    # log_opti_codemaker2_C=8\107.txt
-    # log_opti_codemaker2_C=8\115.txt
-    logs_path = r'''
-        log_opti_codemaker2_C=8\29.txt
-        log_opti_codemaker2_C=8\42.txt
-        log_opti_codemaker2_C=8\1.txt
-        '''.split()
+    # ajouter les chemins vers les logs à vérifier (on peut mettre plusieurs)
+    # chemins de fichier en les séparant par un espace ou retour à la ligne.
+    logs_path = r'''log0.txt'''.split()
 
     for path in logs_path:
+        print(f'Path : {path}')
         check_game(path)
+        print()

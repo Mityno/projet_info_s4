@@ -5,7 +5,7 @@ import math
 
 
 # associate each color letter to a tuple :
-# (color name, bg colors (default, active=lighter), fg color)
+# (color full name, bg colors (default, active=lighter), fg color)
 COLORS_CONVERSION = {
     'r': ('Rose', ('#e91e63', '#f48fb1'), 'white'),
     'I': ('Violet', ('#8e44ad', '#bb8fce'), 'white'),
@@ -20,117 +20,189 @@ COLORS_CONVERSION = {
     'N': ('Noir', ('#000000', '#737373'), 'white'),
     'G': ('Gris', ('#9b9b9b', '#bfbfbf'), 'white'),
 }
-BACKGROUND_COLOR = '#d3926c'
-CONTOUR_COLOR = '#ad6944'
-PADY_VALUE = 5
+BACKGROUND_COLOR = '#d3926c'  # light brown
+CONTOUR_COLOR = '#ad6944'  # warmer brown
+PADY_VALUE = 5  # vertical spaces (in pixel) around each widget
 # maximum 4 colors per line in the color choice frame
 COLORS_PER_LINE = 4
-# at least 2 feebacks per line
+# at least 2 feebacks per line, but adapt to a "high" value for common.LENGTH
+# by making the feedbacks as much squared as possible
 FEEDBACK_PER_LINE = max(round(common.LENGTH ** 0.5), 2)
 
-# store the original setting inside common to be able to restore them after
-# they have been modified when playing
+# store the original setting of common to be able to restore them after they
+# have been modified when playing
 OLD_COLORS = common.COLORS[:]
 OLD_LENGTH = common.LENGTH
-AVAILABLE_COLORS = list(COLORS_CONVERSION.keys())
+
+AVAILABLE_COLORS = list(COLORS_CONVERSION.keys())  # COLORS used for the GUI
 common.COLORS = AVAILABLE_COLORS
 
+
 class InvalidCombinationError(Exception):
+    """
+    Custom error that allows the GUI to know if the combination is ready to be
+    used to play, else the GUI will display an error message
+    """
     pass
 
 
 class GameWindow(tk.Tk):
 
+    """
+    The main window of the GUI, uses other components inside two frames (top
+    and bottom) for good visual placement.
+    Controls the overall behaviour of the window and refresh widgets when
+    settings are changed.
+    """
+
     def __init__(self, codemaker, n_memory=8):
+        """
+        Initialise the window, the user will be playing against the choosen
+        codemaker and will be able to see his `n_memory` last moves.
+        """
+
+        # initialise the tkinter window
         super().__init__()
         self['bg'] = BACKGROUND_COLOR
         self.title('Mastermind')
+        # do not allow the window to be resized, mainly because the window
+        # needs a minimal size to be "pretty" and shouldn't be changed
         self.resizable(False, False)
 
         self.n_memory = n_memory
         self.codemaker = codemaker
         self.make_window(init=True)
 
+        # bind a key to quit the window
         self.bind('<Escape>', lambda event: self.quit())
 
     def make_window(self, *, init=False):
+        """
+        Make (and refresh) the window with the last settings for the game.
+
+        init : used to specify that this is the first making of the window,
+        shouldn't be used once the window is fully created and displayed. Its
+        main purpose is to avoid flickering when refreshing the window.
+        """
+
         global FEEDBACK_PER_LINE
         FEEDBACK_PER_LINE = max(round(common.LENGTH ** 0.5), 2)
 
         SCREEN_WIDTH = self.winfo_screenwidth()
         SCREEN_HEIGHT = self.winfo_screenheight()
-        self.ROOT_WIDTH = 700 # min(max(660, int(SCREEN_WIDTH / 3)), 700)
+        # arbitrary choosen value for the window width, it allows the window
+        # to fit nicely in the screen without hiding widgets and compromising
+        # game behaviour
+        self.ROOT_WIDTH = 700
+
+        # window height is defined to not take too much space in the screen
+        # vertically. Note that on small screen, you might have to reduce
+        # n_memory for the window to fully fit in this height requirement
         ROOT_HEIGHT = SCREEN_HEIGHT // 2
         LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
         UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
+
+        # temporarly place the window in the middle of the screen until
+        # all widget have been defined and placed on the window, only
+        # necessary when initialising the window
         if init:
             self.geometry(
                 f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'
                 f'+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
             )
 
+        # this button serves as a reference for minimal height or width of
+        # some widgets
         placeholder_button = tk.Button(
             self, height=3, width=7,
         )
-
         ROW_MIN_HEIGHT = placeholder_button.winfo_reqheight()
+        placeholder_button.destroy()
 
-        self.top_frame = tk.Frame(
-            self, height=ROW_MIN_HEIGHT*self.n_memory, bg=self['bg']
-        )
-        if 'bottom_frame' not in vars(self):
+        # only create top and bottom frame at initialisition
+        if init:
+            # top frame keeps track of previously played combinations
+            self.top_frame = tk.Frame(
+                self, height=ROW_MIN_HEIGHT*self.n_memory, bg=self['bg']
+            )
+
+            # bottom frame controls the current combination and color select,
+            # as well as the settings
             self.bottom_frame = tk.Frame(
                 self, height=ROW_MIN_HEIGHT*3, bg=self['bg']
             )
 
+        # "memory" frames, they keep track of the previous combinations played
         self.result_frames = []
         for i in range(self.n_memory):
+            # '' is for an empty comination
             curr_frame = GuessResultFrame(
                 self.top_frame, '', (0, 0), self.ROOT_WIDTH
             )
             curr_frame.grid(row=i, pady=2)
             self.result_frames.append(curr_frame)
 
+        # first create the color selection and the current combination frame
         self.colors_frame = ColorSelectionFrame(self.bottom_frame)
         self.guess_frame = CurrGuessFrame(
             self.bottom_frame, self.colors_frame, self.ROOT_WIDTH
         )
+        # associate the guess frame's button with the command of making a move
         self.guess_frame.set_command(self.make_move)
 
+        # place these frames
         self.guess_frame.grid(row=0, columnspan=2, pady=5)
         self.colors_frame.grid(row=1, column=0)
+
         if init:
+            # on initialisation, update the color frame and take its sizes
+            # (which at maximal at that moment) : they will be the reference
+            # sizes for the last row of the bottom frame so that the placement
+            # is consistent, even after the settings have changed
             self.colors_frame.update()
             self.bottom_frame.columnconfigure(0, minsize=self.colors_frame.winfo_reqwidth())
             self.bottom_frame.rowconfigure(1, minsize=self.colors_frame.winfo_reqheight())
 
-        if 'settings_frame' not in vars(self):
+            # create the settings frame. It will never been deleted, so do it
+            # only on initialisation
             self.settings_frame = SettingsFrame(self.bottom_frame, self.reset)
+
+        # place the setting frame
         self.settings_frame.grid(row=1, column=1)
 
+        # finally, place the two main frames of the window
         self.top_frame.grid(row=0)
         self.bottom_frame.grid(row=1)
 
+        # finally, all widgets have been placed, replace the window at the
+        # center of the screen and adjust its size. Only necessary at
+        # initialisation since the window dimension won't change
         if init:
-            # self.update()
-
+            self.top_frame.update()
+            self.bottom_frame.update()
+            ROOT_HEIGHT = (
+                self.top_frame.winfo_reqheight()
+                + self.bottom_frame.winfo_reqheight()
+                + PADY_VALUE
+            )
             LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
             UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
-
-        self.top_frame.update()
-        self.bottom_frame.update()
-        ROOT_HEIGHT = (
-            self.top_frame.winfo_reqheight()
-            + self.bottom_frame.winfo_reqheight()
-            + PADY_VALUE
-        )
-        self.geometry(
-            f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'
-            f'+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
-        )
+            self.geometry(
+                f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'
+                f'+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
+            )
 
     def make_move(self):
+        """
+        Try to make a move in the game, and add the codemaker response on the
+        screen if successful.
+        In case the combination is invalid, shows an information message
+        telling the user to ensure the combination is valid.
+        In case of win, ask the user wether he wants to keep playing or not.
+        """
+
         try:
+            # ask the guess frame for the current combination
             comb = self.guess_frame.get_combination()
         except InvalidCombinationError:
             messagebox.showinfo(
@@ -142,11 +214,16 @@ class GameWindow(tk.Tk):
                 )
             return
 
+        # evaluate the combination with the codemaker
         feedback = self.codemaker.codemaker(comb)
+
+        # make a new frame for the last try, with comb and feeback
         new_result_frame = GuessResultFrame(
             self.top_frame, comb, feedback, self.ROOT_WIDTH
         )
 
+        # delete old guess frames and replace them after the new one as been
+        # inserted
         for curr_frame in self.result_frames:
             curr_frame.grid_forget()
 
@@ -156,24 +233,30 @@ class GameWindow(tk.Tk):
         for i, curr_frame in enumerate(self.result_frames):
             curr_frame.grid(row=i, pady=2)
 
-        # le joueur n'a pas encore gagné
+        # the player hasn't won yet
         if feedback != (common.LENGTH, 0):
             return
 
+        # the player has won
         user_choice = messagebox.askyesno(
             'Fin de partie',
             'Bravo, vous avez gagné !\nVoulez vous rejouer ?',
             icon='info'
             )
 
+        # restart the game or finish the window depeding on the user's choice
         if user_choice:
             self.reboot()
         else:
-            self.destroy()
+            self.quit()
 
     def reboot(self):
+        """
+        Starts a new game against the codemaker.
+        This purges the guesses memory for the new game.
+        """
         self.codemaker.init()
-        print(self.codemaker.solution, flush=True)
+        print('Current combination :', self.codemaker.solution, flush=True)
 
         for curr_frame in self.result_frames:
             curr_frame.destroy()
@@ -187,10 +270,6 @@ class GameWindow(tk.Tk):
             self.result_frames.append(curr_frame)
 
     def reset(self):
-        for child in self.winfo_children():
-            if child != self.bottom_frame:
-                child.destroy()
-                continue
         for child in self.bottom_frame.winfo_children():
             if child != self.settings_frame:
                 child.destroy()
@@ -225,15 +304,15 @@ class GuessResultFrame(tk.Frame):
         CELL_HEIGHT = FEEDBACK_HEIGHT / n_lines
 
         FEEDBACK_RADIUS = math.ceil(
-            (CELL_WIDTH * 0.8) / max(n_lines, FEEDBACK_PER_LINE)
+            (CELL_WIDTH * 0.7) / max(n_lines, FEEDBACK_PER_LINE)
         )
 
         for index, feedback_color in enumerate(feedback_colors):
 
             y_pos, x_pos = divmod(index, FEEDBACK_PER_LINE)
 
-            x_center = CELL_WIDTH * (x_pos + 1/2)
-            y_center = CELL_HEIGHT * (y_pos + 1/2)
+            x_center = CELL_WIDTH * (x_pos + 1/2) - .7
+            y_center = CELL_HEIGHT * (y_pos + 1/2) - .5
 
             top_left = (x_center - FEEDBACK_RADIUS, y_center - FEEDBACK_RADIUS)
             bottom_right = (
