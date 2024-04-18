@@ -11,7 +11,8 @@ COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
 
 @functools.cache
 def evaluation(essai, reference):
-    # ensure the memoisation is effective for symetric calls
+    # on s'assure qu'on utilise bien la mémoïsation pour des appels où les
+    # arguments seraient inversés (la fonction est "symétrique")
     if reference < essai:
         return evaluation(reference, essai)
 
