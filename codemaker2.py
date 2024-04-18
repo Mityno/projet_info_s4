@@ -25,9 +25,8 @@ def codemaker(combinaison):
     solution fait.
     """
     global solution
-
     solution = common.evil_codemaker(frozenset(comb_possibles), combinaison)
-
     eval_retour = common.evaluation(solution, combinaison)
+
     common.maj_possibles(comb_possibles, combinaison, eval_retour)
     return eval_retour

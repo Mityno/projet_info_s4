@@ -76,6 +76,7 @@ def evil_codemaker(comb_possibles, comb_test):
     # sur la totalité des possibilités restantes avec du backtracking
 
     best_sol = None
+    #best_eval = (0,0)
     # le pire cas est d'avoir supprimé toutes les combinaisons
     best_combs_supprimees = float('inf')
 
@@ -109,8 +110,16 @@ def evil_codemaker(comb_possibles, comb_test):
         if temp_combs_supprimees < best_combs_supprimees:
             best_sol = temp_sol
             best_combs_supprimees = temp_combs_supprimees
+            #best_eval = temp_eval
+    
+    # on a choisi une solution non optimale car égale à celle que le codebreaker a essayé alors qu'il en existe d'autres
+    if best_sol == comb_test and len(comb_possibles) > 1:
+        # on choisit n'importe quelle autre solution
+        best_sol = set(comb_possibles - {comb_test}).pop()
+    
+    solution = best_sol
 
-    return best_sol
+    return solution
 
 
 if __name__ == '__main__':

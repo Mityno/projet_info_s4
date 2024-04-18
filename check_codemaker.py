@@ -53,4 +53,6 @@ if __name__ == '__main__':
     for path in logs_path:
         print(f'Path : {path}')
         check_game(path)
+
         print()
+
