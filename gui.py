@@ -88,24 +88,24 @@ class GameWindow(tk.Tk):
         global FEEDBACK_PER_LINE
         FEEDBACK_PER_LINE = max(round(common.LENGTH ** 0.5), 2)
 
-        SCREEN_WIDTH = self.winfo_screenwidth()
-        SCREEN_HEIGHT = self.winfo_screenheight()
-        # arbitrary choosen value for the window width, it allows the window
-        # to fit nicely in the screen without hiding widgets and compromising
-        # game behaviour
-        self.ROOT_WIDTH = 700
-
-        # window height is defined to not take too much space in the screen
-        # vertically. Note that on small screen, you might have to reduce
-        # n_memory for the window to fully fit in this height requirement
-        ROOT_HEIGHT = SCREEN_HEIGHT // 2
-        LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
-        UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
-
-        # temporarly place the window in the middle of the screen until
-        # all widget have been defined and placed on the window, only
-        # necessary when initialising the window
         if init:
+            SCREEN_WIDTH = self.winfo_screenwidth()
+            SCREEN_HEIGHT = self.winfo_screenheight()
+            # arbitrary choosen value for the window width, it allows the window
+            # to fit nicely in the screen without hiding widgets and compromising
+            # game behaviour
+            self.ROOT_WIDTH = 550
+    
+            # window height is defined to not take too much space in the screen
+            # vertically. Note that on small screen, you might have to reduce
+            # n_memory for the window to fully fit in this height requirement
+            ROOT_HEIGHT = SCREEN_HEIGHT // 2
+            LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
+            UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
+    
+            # temporarly place the window in the middle of the screen until
+            # all widget have been defined and placed on the window, only
+            # necessary when initialising the window
             self.geometry(
                 f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'
                 f'+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
@@ -114,7 +114,7 @@ class GameWindow(tk.Tk):
         # this button serves as a reference for minimal height or width of
         # some widgets
         placeholder_button = tk.Button(
-            self, height=3, width=7,
+            self, height=2, width=7,
         )
         ROW_MIN_HEIGHT = placeholder_button.winfo_reqheight()
         placeholder_button.destroy()
@@ -284,7 +284,7 @@ class GuessResultFrame(tk.Frame):
         self['bg'] = parent['bg']
 
         placeholder_button = tk.Button(
-            self, height=3, width=7,
+            self, height=2, width=7,
         )
 
         FEEDBACK_WIDTH = placeholder_button.winfo_reqwidth()
@@ -304,7 +304,7 @@ class GuessResultFrame(tk.Frame):
         CELL_HEIGHT = FEEDBACK_HEIGHT / n_lines
 
         FEEDBACK_RADIUS = math.ceil(
-            (CELL_WIDTH * 0.7) / max(n_lines, FEEDBACK_PER_LINE)
+            (CELL_WIDTH * 0.5) / max(n_lines, FEEDBACK_PER_LINE)
         )
 
         for index, feedback_color in enumerate(feedback_colors):
@@ -375,7 +375,7 @@ class CurrGuessFrame(tk.Frame):
             bg='#27ff00', activebackground='#a7ff96',
             highlightbackground='#a7ff96',
             relief=tk.FLAT, overrelief=tk.RIDGE,
-            height=3, width=7,
+            height=2, width=7,
         )
         self.check_button.grid(row=0, column=1, padx=5, pady=PADY_VALUE)
 
@@ -485,7 +485,7 @@ class SettingsFrame(tk.LabelFrame):
             )
         self.parent_update = parent_update
         self.length_box = tk.Scale(
-            self, from_=1, to=12, resolution=1, orient='horizontal',
+            self, from_=1, to=9, resolution=1, orient='horizontal',
             width=14, sliderlength=20, bd=1, length=180,
             label='Longueur des combinaisons',
             fg='white',
@@ -534,7 +534,7 @@ if __name__ == '__main__':
 
     # réduire n_memory pour les écrans de faible hauteur afin que la fenêtre
     # ne soit pas trop grande verticalement
-    window = GameWindow(codemaker1, n_memory=8)
+    window = GameWindow(codemaker1, n_memory=6)
     window.mainloop()
 
     common.LENGTH = OLD_LENGTH
