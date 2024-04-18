@@ -6,8 +6,8 @@ import common
 
 def init():
     """
-    Cette fonction, appellée à chaque début de partie, initialise un certain
-    nombre de variables utilisées par le codemaker
+    Initialisation d'une solution choisie aléatoirement parmi les combinaisons
+    possibles
     """
     global solution
     solution = ''.join(random.choices(common.COLORS, k=common.LENGTH))
@@ -16,7 +16,7 @@ def init():
 def codemaker(combinaison):
     """
     Cette fonction corrige la combinaison proposée par le codebreaker
-    (donnée en argument)
+    (donnée en argument) en renvoyant l'évaluation correcte de sa combinaison
     """
     global solution
     return common.evaluation(solution, combinaison)

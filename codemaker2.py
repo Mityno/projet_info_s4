@@ -6,8 +6,7 @@ import itertools
 
 def init():
     """
-    Cette fonction, appellée à chaque début de partie, initialise un certain
-    nombre de variables utilisées par le codemaker
+    Initialisation de la liste des combinaisons possibles rangées sans ordre
     """
     global comb_possibles, solution
 
@@ -19,8 +18,11 @@ def init():
 
 def codemaker(combinaison):
     """
-    Cette fonction corrige la combinaison proposée par le codebreaker
-    (donnée en argument)
+    Cette version du codemaker change et choisit la solution qui maximise la
+    longueur de `comb_possibles` tout en respectant les évaluations
+    précédentes.
+    Elle renvoie l'évaluation de la combinaison une fois le choix de la
+    solution fait.
     """
     global solution
     solution = common.evil_codemaker(frozenset(comb_possibles), combinaison)

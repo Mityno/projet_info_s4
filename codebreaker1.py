@@ -14,7 +14,9 @@ def init():
         for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     ]
     # les combinaisons sont rangées aléatoirement
-    # on n'a plus besoin de les tirer au hasard
+    # on n'a plus besoin de les tirer au hasard lors du jeu
+    # cela permet de ne pas avoir à faire d'opérations couteuses comme un .pop
+    # au milieu de la liste (pour retirer les coups joués de ceux possibles)
     random.shuffle(liste_possible)
     return
 
