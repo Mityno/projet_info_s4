@@ -328,7 +328,7 @@ if __name__ == '__main__':
         bins=bins, density=True,
         histtype='bar')
     # plt.plot(list(range(len(nb_essais))), nb_essais)
-    plt.xlabel('Nombres d\'essais du codebreaker3 contre le codemaker1')
+    plt.xlabel('Nombres d\'essais du codebreaker 3 contre le codemaker 1')
     
     plt.tight_layout()
     # plt.show()
