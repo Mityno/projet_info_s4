@@ -65,13 +65,15 @@ def play_log(codemaker, codebreaker, nom_fichier):
 
 
 if __name__ == '__main__':
-
+    
+    # test de la verification des parties 
+    
     # import codemaker_triche as codemaker
     # import codebreaker_triche as codebreaker
 
     # play_log(codemaker, codebreaker, 'log_triche.txt')
     
-    # question 3
+    # question 3 : codebreaker 0 contre codemaker 1
     
     # import codemaker1 as codemaker1
     # import codebreaker0 as codebreaker
@@ -105,7 +107,27 @@ if __name__ == '__main__':
     # plt.savefig('Images/Codebreaker0 contre codemaker1.jpg', dpi=300, format='jpg')
     # print('Finished')
     
-    # question 4
+    
+    # # question 4 codemaker 1 contre codebreaker 1 sans enregistrement du graphe
+    
+    
+    # import codemaker1 as codemaker
+    # import codebreaker1 as codebreaker
+    # import matplotlib.pyplot as plt
+    # import time
+
+    # bef = time.perf_counter()
+    # n_essais = 100
+    # nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(n_essais)]
+    # aft = time.perf_counter()
+    # print(aft - bef)
+    # plt.suptitle(f'Hist of the number of tries before victory for {n_essais} games')
+    # plt.hist(nb_essais, bins=16 - 1, density=True, align='left', rwidth=0.6)
+    # print(flush=True)
+    # plt.tight_layout()
+    # plt.show()
+    
+    # question 4 : codemaker 1 contre codebreaker 1
     
     # import codemaker1 as codemaker1
     # import codebreaker1 as codebreaker
@@ -139,7 +161,7 @@ if __name__ == '__main__':
     # plt.savefig('Images/Codebreaker1 contre codemaker1.jpg', dpi=300, format='jpg')
     # print('Finished')
     
-    # question 7
+    # question 7 : codemaker 1 contre codebraker 2
     
     # import codemaker1 as codemaker1
     # import codebreaker2 as codebreaker
@@ -169,6 +191,10 @@ if __name__ == '__main__':
     # # plt.show()
     # plt.savefig('Images/Codebreaker2 contre codemaker1.jpg', dpi=300, format='jpg')
     # print('Finished')
+    
+    
+    # # Question 8 : comparaison codebreaker 2 contre codemaker 1 et contre codemaker 2
+    
     
     # import codemaker1 as codemaker1
     # import codemaker2 as codemaker2
@@ -204,23 +230,9 @@ if __name__ == '__main__':
     # plt.savefig('Images/Comparaison des codemaker 1 et 2.jpg', dpi=300, format='jpg')
     # print('Finished')
 
-    # import codemaker1 as codemaker
-    # import codebreaker1 as codebreaker
-    # import matplotlib.pyplot as plt
-    # import time
 
-    # bef = time.perf_counter()
-    # n_essais = 100
-    # nb_essais = [play(codemaker, codebreaker, quiet=True) for i in range(n_essais)]
-    # aft = time.perf_counter()
-    # print(aft - bef)
-    # plt.suptitle(f'Hist of the number of tries before victory for {n_essais} games')
-    # plt.hist(nb_essais, bins=16 - 1, density=True, align='left', rwidth=0.6)
-    # print(flush=True)
-    # plt.tight_layout()
-    # plt.show()
-
-    # play(codemaker, codebreaker, quiet=True)
+    # # question 12 codebreaker 3 contre codemaker 2
+    
 
     # import codebreaker3 as codebreaker
     # import codemaker2 as codemaker
@@ -237,8 +249,58 @@ if __name__ == '__main__':
     # i = int(sys.argv[1])
     # play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
     # print(flush=True)
+    
+    
+    # # question 12 codebreaker 3 contre codemaker 1 log
+    
+    # import codemaker1 as codemaker
+    # import codebreaker3 as codebreaker
+    # import matplotlib.pyplot as plt
+    # import time
+    
+    # n = 200
+    
+    # for i in range(n):
+    #     play_log(codemaker, codebreaker, f'Log/log_codemaker1_codebraker2_{i}.txt')
+    
+    
+    # # question 12 traitement donnee (codemaker 1 contre codebreaker 3), creation du graphique
+    
+    # import matplotlib.pyplot as plt
+    
+    # nb_essais = []
+    # for i in range(150):
+    #     filename = f'log_opti_codemaker1_C=8/{i+1}.txt'
+    #     with open(filename, mode='r') as file:
+    #         datas = file.read()
 
+    #     datas = datas.strip().split()
+    #     # print(repr(datas))
+    #     it = iter(datas)
+    #     combs, evs = zip(*zip(it, it))
+    #     evs = [tuple(map(int, ev.split(','))) for ev in evs]
+    #     nb_essais.append(len(evs))
+        
+    # bins = np.array(list(set(nb_essais))) - 0.5
+    # bins = list(bins)
+    # bins.append(max(bins)+1)
+    # print(bins)
 
+    # plt.hist(
+    #     nb_essais,
+    #     bins=bins, density=True,
+    #     histtype='bar')
+    # plt.xlabel('Nombres d\'essais du codebreaker 3 contre le codemaker 1')
+    
+    # plt.tight_layout()
+    # plt.savefig('Images/nombre d\'essaie du codebreaker3 contre le codemaker1.jpg', dpi=300, format='jpg')
+    # print('Finished')
+    
+    
+    
+    # revoir ce que c'est 
+    
+    
     # import codemaker1 as codemaker1
     # import codebreaker3 as codebreaker
     # import matplotlib.pyplot as plt
@@ -289,49 +351,5 @@ if __name__ == '__main__':
     #     play_log(codemaker, codebreaker, f'log_opti_{codemaker.__name__}_C={len(common.COLORS)}/{i}.txt')
     #     print(flush=True)
     
-    # # question 12 codemaker3 contre codemaker1 log
     
-    # import codemaker1 as codemaker
-    # import codebreaker3 as codebreaker
-    # import matplotlib.pyplot as plt
-    # import time
-    
-    # n = 200
-    
-    # for i in range(n):
-    #     play_log(codemaker, codebreaker, f'Log/log_codemaker1_codebraker2_{i}.txt')
-    
-    # # question 12 traitement donnee
-    
-    import matplotlib.pyplot as plt
-    
-    nb_essais = []
-    for i in range(150):
-        filename = f'log_opti_codemaker1_C=8/{i+1}.txt'
-        with open(filename, mode='r') as file:
-            datas = file.read()
-
-        datas = datas.strip().split()
-        # print(repr(datas))
-        it = iter(datas)
-        combs, evs = zip(*zip(it, it))
-        evs = [tuple(map(int, ev.split(','))) for ev in evs]
-        nb_essais.append(len(evs))
-        
-    bins = np.array(list(set(nb_essais))) - 0.5
-    bins = list(bins)
-    bins.append(max(bins)+1)
-    print(bins)
-
-    plt.hist(
-        nb_essais,
-        bins=bins, density=True,
-        histtype='bar')
-    # plt.plot(list(range(len(nb_essais))), nb_essais)
-    plt.xlabel('Nombres d\'essais du codebreaker 3 contre le codemaker 1')
-    
-    plt.tight_layout()
-    # plt.show()
-    plt.savefig('Images/nombre d\'essaie du codebreaker3 contre le codemaker1.jpg', dpi=300, format='jpg')
-    print('Finished')
     
