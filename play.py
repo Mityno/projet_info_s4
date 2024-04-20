@@ -39,7 +39,7 @@ def play_log(codemaker, codebreaker, nom_fichier):
     Elle a la particularité d'écrire les logs de la partie dans le fichier dont
     le nom est donné en argument
     """
-    bef = time.perf_counter()
+
     n_essais = 0
     codebreaker.init()
     codemaker.init()
@@ -55,8 +55,6 @@ def play_log(codemaker, codebreaker, nom_fichier):
         if ev[0] >= common.LENGTH:
             break
 
-    aft = time.perf_counter()
-    print(aft - bef)
     with open(nom_fichier, mode='w') as fichier:
         for comb, ev in zip(liste_comb, liste_eval):
             fichier.write(f'{comb}\n{ev[0]},{ev[1]}\n')
