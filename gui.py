@@ -29,11 +29,6 @@ COLORS_PER_LINE = 4
 # by making the feedbacks as much squared as possible
 FEEDBACK_PER_LINE = max(round(common.LENGTH ** 0.5), 2)
 
-# store the original setting of common to be able to restore them after they
-# have been modified when playing
-OLD_COLORS = common.COLORS[:]
-OLD_LENGTH = common.LENGTH
-
 AVAILABLE_COLORS = list(COLORS_CONVERSION.keys())  # COLORS used for the GUI
 common.COLORS = AVAILABLE_COLORS
 
@@ -255,12 +250,16 @@ class GameWindow(tk.Tk):
         Starts a new game against the codemaker.
         This purges the guesses memory for the new game.
         """
+        # initialise the codemaker and cheat by showing to the user the
+        # combination
         self.codemaker.init()
         print('Current combination :', self.codemaker.solution, flush=True)
 
+        # remove all former guesses (if any)
         for curr_frame in self.result_frames:
             curr_frame.destroy()
 
+        # create new blank guess frames
         self.result_frames = []
         for i in range(self.n_memory):
             curr_frame = GuessResultFrame(
@@ -270,23 +269,44 @@ class GameWindow(tk.Tk):
             self.result_frames.append(curr_frame)
 
     def reset(self):
+        """
+        Reloads the whole window, used to update the window when settings
+        are changed.
+        """
+        # destroy old color_frame and curr_guess_frame (and other if any)
+        # without destroying the settings frame
         for child in self.bottom_frame.winfo_children():
             if child != self.settings_frame:
                 child.destroy()
-        self.make_window()
-        self.reboot()
+        self.make_window()  # rebuild the window
+        self.reboot()  # start a new game
 
 
 class GuessResultFrame(tk.Frame):
 
+    """
+    This frame stores a previously played (or blank) move of the user.
+    It shows both the played combination and the feedback given by the
+    codemaker.
+    """
+
     def __init__(self, parent, combination, feedback, ROOT_WIDTH):
+        """
+        Build the frame with the combination and the feedback.
+        Uses ROOT_WIDTH to be able to resize its components without overflowing
+        from its parent.
+        """
+
         super().__init__(parent)
         self['bg'] = parent['bg']
 
+        # this button serves as a reference for minimal height or width of
+        # some widgets (here the feedback canvas)
         placeholder_button = tk.Button(
             self, height=2, width=7,
         )
 
+        # the feedback canvas will be the same size as the button
         FEEDBACK_WIDTH = placeholder_button.winfo_reqwidth()
         FEEDBACK_HEIGHT = placeholder_button.winfo_reqheight()
 
@@ -296,29 +316,42 @@ class GuessResultFrame(tk.Frame):
             border=0, highlightthickness=0
         )
 
+        # make a list of colors for the feedback pegs
+        # white stands for a well placed colors
+        # red stands for a badly placed colors
         feedback_colors = ['white'] * feedback[0] + ['red'] * feedback[1]
+        # fill the missing pegs with a default color
         feedback_colors += ['#f0b27a'] * (common.LENGTH - len(feedback_colors))
 
+        # each cell will contain a feedback peg
         CELL_WIDTH = FEEDBACK_WIDTH / FEEDBACK_PER_LINE
         n_lines = math.ceil(common.LENGTH / FEEDBACK_PER_LINE)
         CELL_HEIGHT = FEEDBACK_HEIGHT / n_lines
 
+        # pegs are circles of radius FEEDBACK_RADIUS
         FEEDBACK_RADIUS = math.ceil(
             (CELL_WIDTH * 0.5) / max(n_lines, FEEDBACK_PER_LINE)
         )
 
+        # create and place each peg
+        # index is used for placement
+        # feeback_color is for the color of the peg
         for index, feedback_color in enumerate(feedback_colors):
 
+            # get the position of the peg on a rectangle
             y_pos, x_pos = divmod(index, FEEDBACK_PER_LINE)
 
+            # coordinates of the center of the cell
             x_center = CELL_WIDTH * (x_pos + 1/2) - .7
             y_center = CELL_HEIGHT * (y_pos + 1/2) - .5
 
+            # coordinates of the border of the circle for the canvas
             top_left = (x_center - FEEDBACK_RADIUS, y_center - FEEDBACK_RADIUS)
             bottom_right = (
                 x_center + FEEDBACK_RADIUS, y_center + FEEDBACK_RADIUS
             )
 
+            # create a circular peg of feedback_color
             feedback_canvas.create_oval(
                 *top_left, *bottom_right,
                 fill=feedback_color, width=0
@@ -326,64 +359,10 @@ class GuessResultFrame(tk.Frame):
 
         feedback_canvas.grid(row=0, column=1, padx=5, pady=PADY_VALUE)
 
+        # create the canvas that will contain the played combination
+        # takes 95% of the remaining width
         CANVAS_WIDTH = (ROOT_WIDTH - FEEDBACK_WIDTH) * 0.95
-        CANVAS_HEIGHT = FEEDBACK_HEIGHT
-
-        self.choices_canvas = tk.Canvas(
-            self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT,
-            bg='#d38053', highlightbackground=CONTOUR_COLOR,
-            border=0, highlightthickness=3,
-        )
-        self.choices_canvas.grid(row=0, column=0, padx=5)
-
-        # there are common.LENGTH cells in the canvas
-        CELL_WIDTH = CANVAS_WIDTH // common.LENGTH
-        CELL_HEIGHT = CANVAS_HEIGHT
-
-        CIRCLE_RADIUS = (CELL_HEIGHT * 0.8) / 2
-
-        color_names = [
-            COLORS_CONVERSION[color_value][1][0]
-            for color_value in combination
-        ]
-
-        for cell_num, color_name in zip(range(common.LENGTH), color_names):
-
-            x_center = CELL_WIDTH * (cell_num + 1/2) + 2
-            y_center = CELL_HEIGHT // 2 + 2
-
-            top_left = (x_center - CIRCLE_RADIUS, y_center - CIRCLE_RADIUS)
-            bottom_right = (x_center + CIRCLE_RADIUS, y_center + CIRCLE_RADIUS)
-
-            self.choices_canvas.create_oval(
-                *top_left, *bottom_right,
-                fill=color_name, width=0
-            )
-
-
-class CurrGuessFrame(tk.Frame):
-
-    def __init__(self, parent, color_selector, ROOT_WIDTH):
-        super().__init__(parent)
-        self['bg'] = parent['bg']
-
-        self.color_selector = color_selector
-        self.colors_value = [None] * common.LENGTH
-
-        self.check_button = tk.Button(
-            self, text='Valider',
-            bg='#27ff00', activebackground='#a7ff96',
-            highlightbackground='#a7ff96',
-            relief=tk.FLAT, overrelief=tk.RIDGE,
-            height=2, width=7,
-        )
-        self.check_button.grid(row=0, column=1, padx=5, pady=PADY_VALUE)
-
-        BUTTON_WIDTH = self.check_button.winfo_reqwidth()
-        BUTTON_HEIGHT = self.check_button.winfo_reqheight()
-
-        CANVAS_WIDTH = (ROOT_WIDTH - BUTTON_WIDTH) * 0.95
-        CANVAS_HEIGHT = BUTTON_HEIGHT
+        CANVAS_HEIGHT = FEEDBACK_HEIGHT  # same height as the feedback canvas
 
         self.choices_canvas = tk.Canvas(
             self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT,
@@ -396,40 +375,148 @@ class CurrGuessFrame(tk.Frame):
         CELL_WIDTH = CANVAS_WIDTH / common.LENGTH
         CELL_HEIGHT = CANVAS_HEIGHT
 
+        # each color of the combination is shown in a circle
         CIRCLE_RADIUS = (CELL_HEIGHT * 0.8) / 2
 
-        for cell_num in range(common.LENGTH):
+        # get the hex code of the color associated with each color_value
+        color_names = [
+            COLORS_CONVERSION[color_value][1][0]
+            for color_value in combination
+        ]
 
+        # create and place each color circle
+        for cell_num, color_name in zip(range(common.LENGTH), color_names):
+
+            # coordinates of the center of the cell
             x_center = CELL_WIDTH * (cell_num + 1/2) + 2
             y_center = CELL_HEIGHT / 2 + 2
 
+            # coordinates of the border of the circle for the canvas
             top_left = (round(x_center - CIRCLE_RADIUS), y_center - CIRCLE_RADIUS)
             bottom_right = (round(x_center + CIRCLE_RADIUS), y_center + CIRCLE_RADIUS)
 
+            # create a circle for the color
+            self.choices_canvas.create_oval(
+                *top_left, *bottom_right,
+                fill=color_name, width=0
+            )
+
+
+class CurrGuessFrame(tk.Frame):
+
+    """
+    This frame allows the user to make a move (thanks to a button).
+    It shows the current combination.
+
+    It takes a color selector as an argument and will call it to get the
+    currently selected color when a color circle is clicked in the canvas.
+    """
+
+    def __init__(self, parent, color_selector, ROOT_WIDTH):
+        """
+        Build the frame with the combination and a validation button.
+        Uses ROOT_WIDTH to be able to resize its components without overflowing
+        from its parent.
+        """
+
+        super().__init__(parent)
+        self['bg'] = parent['bg']
+
+        # stores the color selector that will be called to know which color
+        # is currently selected
+        self.color_selector = color_selector
+        # stores the current theoretical combination
+        self.colors_value = [None] * common.LENGTH
+
+        # make the button that allows to validate the current combination
+        self.check_button = tk.Button(
+            self, text='Valider',
+            bg='#27ff00', activebackground='#a7ff96',
+            highlightbackground='#a7ff96',
+            relief=tk.FLAT, overrelief=tk.RIDGE,
+            height=2, width=7,
+        )
+        self.check_button.grid(row=0, column=1, padx=5, pady=PADY_VALUE)
+
+        # stores the button dimensions
+        BUTTON_WIDTH = self.check_button.winfo_reqwidth()
+        BUTTON_HEIGHT = self.check_button.winfo_reqheight()
+
+        # and use them to get the canvas dimensions
+        CANVAS_WIDTH = (ROOT_WIDTH - BUTTON_WIDTH) * 0.95
+        CANVAS_HEIGHT = BUTTON_HEIGHT
+
+        # create the canvas were the combination will be displayed
+        self.choices_canvas = tk.Canvas(
+            self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT,
+            bg='#d38053', highlightbackground=CONTOUR_COLOR,
+            border=0, highlightthickness=3,
+        )
+        self.choices_canvas.grid(row=0, column=0, padx=5)
+
+        # there are common.LENGTH cells in the canvas
+        CELL_WIDTH = CANVAS_WIDTH / common.LENGTH
+        CELL_HEIGHT = CANVAS_HEIGHT
+
+        # each color of the combination is shown in a circle
+        CIRCLE_RADIUS = (CELL_HEIGHT * 0.8) / 2
+
+        # create and place each color circle
+        for cell_num in range(common.LENGTH):
+
+            # coordinates of the center of the cell
+            x_center = CELL_WIDTH * (cell_num + 1/2) + 2
+            y_center = CELL_HEIGHT / 2 + 2
+
+            # coordinates of the border of the circle for the canvas
+            top_left = (round(x_center - CIRCLE_RADIUS), y_center - CIRCLE_RADIUS)
+            bottom_right = (round(x_center + CIRCLE_RADIUS), y_center + CIRCLE_RADIUS)
+
+            # create a circle for the color
             circle_id = self.choices_canvas.create_oval(
                 *top_left, *bottom_right,
                 fill='white', width=0
             )
+            # bind each circle to the mouse
+            # will call the function that changes the color of a circle
             self.choices_canvas.tag_bind(
                 circle_id, '<Button-1>', func=self.change_choice_color
             )
 
     def set_command(self, func):
+        """
+        Set the validation button function.
+        Should be used by a parent manage the game behaviour.
+        """
         self.check_button['command'] = func
 
     def change_choice_color(self, event):
+        """
+        Get the current color from the color selector and changes the color
+        of the current guess circle that has been clicked.
+        """
+
+        # get the circle that has been clicked
         circle_id, = self.choices_canvas.find_closest(event.x, event.y)
+        # get the new color value
         color_value = self.color_selector.get_value()
+        # update the stored combination
         self.colors_value[circle_id - 1] = color_value
+        # get the hex code of the color
         _, (color_name, _), _ = COLORS_CONVERSION[color_value]
         self.choices_canvas.itemconfigure(
-            circle_id, fill=color_name
+            circle_id, fill=color_name  # change the circle color
         )
 
     def get_combination(self):
+        """
+        Returns the current combination
+        """
+        # if the combination isn't fully defined, raise an error
         if None in self.colors_value:
             raise InvalidCombinationError(self.colors_value)
-        return ''.join(self.colors_value[:])
+        # else return a string of the combination
+        return ''.join(self.colors_value)
 
 
 class ColorSelectionFrame(tk.Frame):
@@ -441,13 +528,15 @@ class ColorSelectionFrame(tk.Frame):
             highlightbackground=CONTOUR_COLOR, highlightthickness=5
         )
 
-        self.color_buttons = []
+        # tkinter StrinVar stores the current selected color
         self.curr_color = tk.StringVar(value=common.COLORS[0])
 
+        # create and place each color button
         for index, color in enumerate(common.COLORS):
 
+            # get all the color attributes
             color_name, bg_colors, fg_color = COLORS_CONVERSION[color]
-            default_bg, active_bg = bg_colors
+            default_bg, active_bg = bg_colors  # unpack backgroud colors
 
             # creating the radiobutton
             button = tk.Radiobutton(
@@ -468,15 +557,28 @@ class ColorSelectionFrame(tk.Frame):
                 row=line, column=column,
                 pady=2 * PADY_VALUE, padx=10,
             )
-            self.color_buttons.append(button)
 
     def get_value(self):
+        """
+        Returns the current selected color value
+        """
         return self.curr_color.get()
 
 
 class SettingsFrame(tk.LabelFrame):
+    """
+    This frame is used to control the game settings with scales widget.
+    It communicates with its parent by taking a `parent_update` argument that
+    will be called when a setting changes in order to update the window with
+    the made change.
+    """
 
     def __init__(self, parent, parent_update):
+        """
+        Build the frame with both settings scales.
+        `parent_update` will be called when a setting changes to refresh the
+        main window.
+        """
         super().__init__(
             parent, text='Paramètres de jeu', labelanchor='n',
             fg='white',
@@ -484,6 +586,8 @@ class SettingsFrame(tk.LabelFrame):
             highlightbackground=CONTOUR_COLOR, highlightthickness=2,
             )
         self.parent_update = parent_update
+
+        # create the scales
         self.length_box = tk.Scale(
             self, from_=1, to=9, resolution=1, orient='horizontal',
             width=14, sliderlength=20, bd=1, length=180,
@@ -503,33 +607,44 @@ class SettingsFrame(tk.LabelFrame):
             troughcolor=CONTOUR_COLOR,
         )
 
+        # set the initial values
         self.length_box.set(common.LENGTH)
         self.colors_box.set(len(OLD_COLORS))
 
+        # set the command for both scales
         self.length_box['command'] = self.update_settings
         self.colors_box['command'] = self.update_settings
 
+        # place the scales
         self.length_box.grid(row=0, pady=3, padx=3)
         self.colors_box.grid(row=1, pady=3)
 
-        self.last_update_command = None
-        self.after(0, self.update_settings, None)
+        # update the main window after it is ready to be refreshed
+        # (5ms should be enough for the program to be ready)
+        self.after(5, self.update_settings, None)
 
     def update_settings(self, event):
-        global COLORS
         # used for comparison, ensure to update the window only and only if
         # these values have actually changed
         old_values = (common.LENGTH, common.COLORS[:])
 
+        # get changed values
         common.LENGTH = self.length_box.get()
         nb_colors = self.colors_box.get()
         common.COLORS = AVAILABLE_COLORS[:nb_colors]
 
+        # refresh the window only if the values have changed
         if old_values != (common.LENGTH, common.COLORS):
             self.parent_update()
 
 
 if __name__ == '__main__':
+
+    # store the original setting of common to be able to restore them after they
+    # have been modified when playing
+    OLD_COLORS = common.COLORS[:]
+    OLD_LENGTH = common.LENGTH
+
     import codemaker1
 
     # réduire n_memory pour les écrans de faible hauteur afin que la fenêtre
@@ -537,5 +652,6 @@ if __name__ == '__main__':
     window = GameWindow(codemaker1, n_memory=6)
     window.mainloop()
 
+    # on remet les valeurs initiales après exécution du programme
     common.LENGTH = OLD_LENGTH
     common.COLORS = OLD_COLORS

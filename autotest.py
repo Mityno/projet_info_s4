@@ -119,7 +119,7 @@ for i in range(len(comb_test)):
     if sol in list(solutions_optimales[i]):
         print(" Test valide \n")
     else:
-        raise Exception(r"/!\ la fonction a un probleme")
+        raise Exception(r"/!\ la fonction evil_codemaker a un probleme")
 
 
 common.LENGTH = OLD_LENTGTH
