@@ -16,7 +16,8 @@ def init():
     global solution, comb_possibles, all_comb
 
     comb_possibles = {
-        comb for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
+        ''.join(comb)
+        for comb in itertools.product(common.COLORS, repeat=common.LENGTH)
     }
 
     all_comb = comb_possibles.copy()
