@@ -2,10 +2,12 @@
 import common
 import itertools
 
-# tests sont effectués avec les paramètres
-# LENGTH = 4 et COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
-# sauf en cas de contre indication
-# si un test échoue, on lève une erreur et les tests s'arrêtent là
+"""
+Les tests sont effectués avec les paramètres
+LENGTH = 4 et COLORS = ['R', 'V', 'B', 'J', 'N', 'M', 'O', 'G']
+sauf en cas de contre indication.
+Si un test échoue, on lève une erreur et les tests s'arrêtent là
+"""
 
 # on conserve les valeurs initiales des paramètres du jeu qui vont être
 # modifiés dans les tests afin de pouvoir les remettre en fin de programme
