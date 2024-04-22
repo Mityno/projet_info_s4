@@ -69,7 +69,7 @@ class GameWindow(tk.Tk):
         self.make_window(init=True)
 
         # bind a key to quit the window
-        self.bind('<Escape>', lambda event: self.quit())
+        self.bind('<Escape>', lambda _: self.quit())
 
     def make_window(self, *, init=False):
         """
@@ -82,10 +82,10 @@ class GameWindow(tk.Tk):
 
         global FEEDBACK_PER_LINE
         FEEDBACK_PER_LINE = max(round(common.LENGTH ** 0.5), 2)
+        SCREEN_WIDTH = self.winfo_screenwidth()
+        SCREEN_HEIGHT = self.winfo_screenheight()
 
         if init:
-            SCREEN_WIDTH = self.winfo_screenwidth()
-            SCREEN_HEIGHT = self.winfo_screenheight()
             # arbitrary choosen value for the window width, it allows the window
             # to fit nicely in the screen without hiding widgets and compromising
             # game behaviour
@@ -102,7 +102,7 @@ class GameWindow(tk.Tk):
             # all widget have been defined and placed on the window, only
             # necessary when initialising the window
             self.geometry(
-                f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'
+                f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'+
                 f'+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
             )
 
@@ -183,7 +183,7 @@ class GameWindow(tk.Tk):
             LEFT_BORDER_POS = (SCREEN_WIDTH - self.ROOT_WIDTH) // 2
             UPPER_BORDER_POS = (SCREEN_HEIGHT - ROOT_HEIGHT) // 2
             self.geometry(
-                f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'
+                f'{self.ROOT_WIDTH}x{ROOT_HEIGHT}'+
                 f'+{LEFT_BORDER_POS}+{UPPER_BORDER_POS}'
             )
 
@@ -203,7 +203,7 @@ class GameWindow(tk.Tk):
             messagebox.showinfo(
                 'Combinaison invalide',
                 'La combinaison essayée n\'est pas valide.',
-                detail='Assurez vous d\'avoir rentré '
+                detail='Assurez vous d\'avoir rentré '+
                 'toutes les couleurs avant de valider.',
                 icon='question'
                 )
@@ -426,7 +426,7 @@ class CurrGuessFrame(tk.Frame):
         # is currently selected
         self.color_selector = color_selector
         # stores the current theoretical combination
-        self.colors_value = [None] * common.LENGTH
+        self.colors_value = [""] * common.LENGTH
 
         # make the button that allows to validate the current combination
         self.check_button = tk.Button(
@@ -513,7 +513,7 @@ class CurrGuessFrame(tk.Frame):
         Returns the current combination
         """
         # if the combination isn't fully defined, raise an error
-        if None in self.colors_value:
+        if "" in self.colors_value:
             raise InvalidCombinationError(self.colors_value)
         # else return a string of the combination
         return ''.join(self.colors_value)
@@ -540,7 +540,7 @@ class ColorSelectionFrame(tk.Frame):
 
             # creating the radiobutton
             button = tk.Radiobutton(
-                self, value=color, indicatoron=0, text=color_name,
+                self, value=color, indicatoron=False, text=color_name,
                 variable=self.curr_color,
                 bg=default_bg, highlightbackground=default_bg,
                 activebackground=active_bg, selectcolor=active_bg,
@@ -623,7 +623,7 @@ class SettingsFrame(tk.LabelFrame):
         # (5ms should be enough for the program to be ready)
         self.after(5, self.update_settings, None)
 
-    def update_settings(self, event):
+    def update_settings(self, _):
         # used for comparison, ensure to update the window only and only if
         # these values have actually changed
         old_values = (common.LENGTH, common.COLORS[:])
